@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/danieleisenberg/CLionProjects/ex3/Client_Side.h
+sys/socket.h
+-
+string
+-
+iostream
+-
+unistd.h
+-
+netinet/in.h
+-
+arpa/inet.h
+-
+
+/Users/danieleisenberg/CLionProjects/ex3/Tcp_Server.h
+sys/socket.h
+-
+string
+-
+iostream
+-
+unistd.h
+-
+netinet/in.h
+-
+
+/Users/danieleisenberg/CLionProjects/ex3/main.cpp
+iostream
+-
+Tcp_Server.h
+/Users/danieleisenberg/CLionProjects/ex3/Tcp_Server.h
+Client_Side.h
+/Users/danieleisenberg/CLionProjects/ex3/Client_Side.h
+
