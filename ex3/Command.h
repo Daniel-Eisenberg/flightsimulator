@@ -11,7 +11,7 @@
 
 class Command {
 protected:
-    std::map<std::string, Variable> variables_map;
+    std::map<std::string, Variable*> variables_map;
 public:
     int virtual execute(std::vector<std::string> *list, int index);
 };
@@ -47,6 +47,12 @@ public:
 };
 
 class PrintCommand : public Command {
+    int args = 1;
+public:
+    int virtual execute(std::vector<std::string> *list, int index);
+};
+
+class IfCommand : public Command {
     int args = 1;
 public:
     int virtual execute(std::vector<std::string> *list, int index);

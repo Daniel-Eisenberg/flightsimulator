@@ -9,15 +9,15 @@
 #include <string>
 
 class Variable {
-    int value;
-    std::string sim;
-    bool shouldUpdateSim;
+    int value = 0;
+    std::string sim = "";
+    bool shouldUpdateSim = false;
+    int scope;
 public:
-    void setValue(int value);
+    Variable(int value, std::string sim, bool shouldUpdateSim);
     int getValue();
-    void setSim(std::string sim);
+    void setValue();
     std::string getSim();
-    void setShouldUpdateSim(bool val);
     bool getShouldUpdateSim();
 };
 
