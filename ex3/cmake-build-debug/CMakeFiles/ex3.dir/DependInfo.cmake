@@ -4,9 +4,11 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/danieleisenberg/CLionProjects/ex3/Client_Side.cpp" "/Users/danieleisenberg/CLionProjects/ex3/cmake-build-debug/CMakeFiles/ex3.dir/Client_Side.cpp.o"
-  "/Users/danieleisenberg/CLionProjects/ex3/Tcp_Server.cpp" "/Users/danieleisenberg/CLionProjects/ex3/cmake-build-debug/CMakeFiles/ex3.dir/Tcp_Server.cpp.o"
-  "/Users/danieleisenberg/CLionProjects/ex3/main.cpp" "/Users/danieleisenberg/CLionProjects/ex3/cmake-build-debug/CMakeFiles/ex3.dir/main.cpp.o"
+  "/Users/yuvalgrinberg/Projects/flightsimulator/ex3/Client_Side.cpp" "/Users/yuvalgrinberg/Projects/flightsimulator/ex3/cmake-build-debug/CMakeFiles/ex3.dir/Client_Side.cpp.o"
+  "/Users/yuvalgrinberg/Projects/flightsimulator/ex3/Command.cpp" "/Users/yuvalgrinberg/Projects/flightsimulator/ex3/cmake-build-debug/CMakeFiles/ex3.dir/Command.cpp.o"
+  "/Users/yuvalgrinberg/Projects/flightsimulator/ex3/Tcp_Server.cpp" "/Users/yuvalgrinberg/Projects/flightsimulator/ex3/cmake-build-debug/CMakeFiles/ex3.dir/Tcp_Server.cpp.o"
+  "/Users/yuvalgrinberg/Projects/flightsimulator/ex3/Variable.cpp" "/Users/yuvalgrinberg/Projects/flightsimulator/ex3/cmake-build-debug/CMakeFiles/ex3.dir/Variable.cpp.o"
+  "/Users/yuvalgrinberg/Projects/flightsimulator/ex3/main.cpp" "/Users/yuvalgrinberg/Projects/flightsimulator/ex3/cmake-build-debug/CMakeFiles/ex3.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 
