@@ -10,7 +10,7 @@ Variable::Variable(int value, std::string sim, bool shouldUpdateSim) {
     this->shouldUpdateSim = shouldUpdateSim;
 }
 
-void Variable::setValue() {
+void Variable::setValue(int value) {
     this->value = value;
 }
 

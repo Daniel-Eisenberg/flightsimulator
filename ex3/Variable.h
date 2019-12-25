@@ -16,7 +16,7 @@ class Variable {
 public:
     Variable(int value, std::string sim, bool shouldUpdateSim);
     int getValue();
-    void setValue();
+    void setValue(int value);
     std::string getSim();
     bool getShouldUpdateSim();
 };

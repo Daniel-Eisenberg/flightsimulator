@@ -10,10 +10,12 @@
 #include "Variable.h"
 
 class Command {
+    int args = 2;
 protected:
     std::map<std::string, Variable*> variables_map;
 public:
     int virtual execute(std::vector<std::string> *list, int index);
+    void calcAndSetMath(std::vector<std::string> *list, int i, std::string varName);
 };
 
 class OpenServerCommand : public Command {
@@ -41,7 +43,13 @@ public:
 };
 
 class WhileLoopCommand : public Command {
-    int args;
+    int args = 0;
+public:
+    int virtual execute(std::vector<std::string> *list, int index);
+};
+
+class IfCommand : public Command {
+    int args = 0;
 public:
     int virtual execute(std::vector<std::string> *list, int index);
 };
@@ -52,7 +60,7 @@ public:
     int virtual execute(std::vector<std::string> *list, int index);
 };
 
-class IfCommand : public Command {
+class SleepCommand : public Command {
     int args = 1;
 public:
     int virtual execute(std::vector<std::string> *list, int index);
