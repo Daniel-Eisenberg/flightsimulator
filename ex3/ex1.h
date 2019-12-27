@@ -7,6 +7,7 @@
 #define EX1_EX1_H
 using namespace std;
 
+#include <string>
 #include "Expression.h"
 #include "Interpreter.h"
 

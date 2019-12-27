@@ -75,6 +75,8 @@ bool static evaluateLogicalExp(std::vector<std::string> *list, int i) {
             return leftExp > rightExp;
     else if (defType == "<")
             return leftExp < rightExp;
+
+    return false;
 }
 
 
@@ -134,7 +136,6 @@ int DefineVarCommand::execute(std::vector<std::string> *list, int i)  {
 
 
 int SetVarCommand::execute(std::vector<std::string> *list, int i)  {
-    Variable *var = nullptr;
     string varName = list->at(i + 1);
 
     if (list->at(i + 3) == "$") { // Calc and set a math expression
