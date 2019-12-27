@@ -207,11 +207,10 @@ void setMap() {
 void ex3::parser(vector<string> *params, unsigned index, bool scope) {
     setMap();
     while (index < params -> size()) {
-        if (!scope) {
-            string current_command = params -> at(index);
-            index += ex3::command_map.at(current_command).execute(params, index);
-            index++;
-        } else {
+        string current_command = params -> at(index);
+        index += ex3::command_map.at(current_command).execute(params, index);
+        index++;
+        if (scope && current_command == "}") {
             break;
         }
     }
