@@ -4,6 +4,10 @@
 
 #include "Command.h"
 #include "Tcp_Server.h"
+#include "Interpreter.h"
+#include <string>
+
+using namespace std;
 
 
 // Local static class methods
@@ -12,7 +16,7 @@
 int parseMathExp(std::vector<std::string> *list, int i) {
     string mathExp = "";
     int value;
-    while (list.at(i) != "$") {
+    while (list -> at(i) != "$") {
         if (isalpha(list.at(i)))
             mathExp += variables_map[list.at(i)]->value;
         else
@@ -132,7 +136,7 @@ int DefineVarCommand::execute(std::vector<std::string> *list, int i)  {
 //}
 
 
-int SetVarCommand::execute(std::vector<std::string> *list, int i)  {
+int SetVarCommand:: execute(std::vector<std::string> *list, int i)  {
     Variable var;
     string varName = list.at(i + 1);
 
