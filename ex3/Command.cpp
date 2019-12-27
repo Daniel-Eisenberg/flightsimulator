@@ -4,25 +4,28 @@
 
 #include "Command.h"
 #include "Tcp_Server.h"
-#include "Interpreter.h"
-#include "Expression.h"
 #include <vector>
+#include "ex1.h"
+#include "Expression.h"
+#include <iostream>
 
 using namespace std;
 // Local static class methods
 // ---------------------------
 
+static std::map<std::string, Variable*> variables_map;
+
 int parseMathExp(std::vector<std::string> *list, int i) {
-    string mathExp = "";
+    string mathExp;
     int value;
     while (list->at(i) != "$") {
         if (isalpha(list->at(i)[0]))
-            mathExp += Command::variables_map[list->at(i)]->getValue();
+            mathExp += to_string(variables_map[list->at(i)]->getValue());
         else
             mathExp += list->at(i);
         i++;
     }
-    Interpreter *inter = new Interpreter();
+    Interpreter* inter = new Interpreter();
     Expression *exp = inter->interpret(mathExp);
     value = int(exp->calculate());
 
@@ -35,7 +38,7 @@ int static evaluateExp(std::vector<std::string> *list, int i) {
     if (firstElement == "$")
         return parseMathExp(list, i + 1);
     else if (isalpha(firstElement[0]))
-        return Command::variables_map[list->at(i)]->getValue();
+        return variables_map[list->at(i)]->getValue();
     else if (isdigit(firstElement[0]))
         return stod(firstElement);
 
@@ -43,7 +46,7 @@ int static evaluateExp(std::vector<std::string> *list, int i) {
 }
 
 // Finds the next occurence of a string in the array
-int static findStopSign(std::vector<std::string> *list, int i, string sign) {
+int static findStopSign(std::vector<std::string> *list, int i, const string& sign) {
     int args = 1;
     while (list->at(i) != sign) {
         i++;
@@ -83,6 +86,9 @@ bool static evaluateLogicalExp(std::vector<std::string> *list, int i) {
 
 // Subclasses methods
 // ---------------------------
+
+int Command::execute(std::vector<std::string> *list, int i) {
+}
 
 int OpenServerCommand::execute(std::vector<std::string> *list, int i) {
     Tcp_Server server;
