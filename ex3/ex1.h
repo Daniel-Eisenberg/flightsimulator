@@ -7,6 +7,7 @@
 #define EX1_EX1_H
 using namespace std;
 
+#include <string>
 #include "Expression.h"
 #include "Interpreter.h"
 
@@ -20,23 +21,23 @@ public:
     double calculate();
 };
 
-class Variable : public Expression {
+class Var : public Expression {
     string name = "";
     double value = 0;
 public:
-    Variable(string name, double value);
-    ~Variable(){};
+    Var(string name, double value);
+    ~Var(){};
     double calculate();
     string getName();
-    Variable& clone();
-    Variable& operator+(Variable *v);
-    Variable& operator-(Variable *v);
-    Variable& operator++();
-    Variable& operator--();
-    Variable& operator++(int);
-    Variable& operator--(int);
-    Variable& operator+=(Variable *v);
-    Variable& operator-=(Variable *v);
+    Var& clone();
+    Var& operator+(Var *v);
+    Var& operator-(Var *v);
+    Var& operator++();
+    Var& operator--();
+    Var& operator++(int);
+    Var& operator--(int);
+    Var& operator+=(Var *v);
+    Var& operator-=(Var *v);
 };
 
 class BinaryOperator : public Expression {

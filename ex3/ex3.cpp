@@ -5,7 +5,7 @@
 #include "ex3.h"
 
 
-
+static unordered_map<string, Command> command_map;
 
 vector<string> split(const string& s, char delimiter) {
     vector<string> tokens;
@@ -192,7 +192,7 @@ void setMap() {
     IfCommand c6;
     PrintCommand c7;
     SleepCommand c8;
-    ex3::command_map.insert(
+    command_map.insert(
             {{"openDataServer", c1},
             {"connectControlClient", c2},
             {"var", c3},
@@ -207,10 +207,11 @@ void setMap() {
 void ex3::parser(vector<string> *params, unsigned index, bool scope) {
     setMap();
     while (index < params -> size()) {
-        string current_command = params -> at(index);
-        index += ex3::command_map.at(current_command).execute(params, index);
-        index++;
-        if (scope && current_command == "}") {
+        if (!scope) {
+            string current_command = params -> at(index);
+            index += command_map.at(current_command).execute(params, index);
+            index++;
+        } else {
             break;
         }
     }

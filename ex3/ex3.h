@@ -21,10 +21,8 @@ using namespace std;
 class ex3 {
 public:
     OpenServerCommand c;
-    vector<string> lexerCode(std::string filename);
+    static vector<string> lexerCode(std::string filename);
     static void parser(vector<string> *params, unsigned index, bool scope);
-    static unordered_map<string, Command> command_map;
-
 };
 
 #endif //EX3_EX3_H

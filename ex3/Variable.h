@@ -9,12 +9,12 @@
 #include <string>
 
 class Variable {
-    int value = 0;
+    double value = 0;
     std::string sim = "";
     bool shouldUpdateSim = false;
     int scope;
 public:
-    Variable(int value, std::string sim, bool shouldUpdateSim);
+    Variable(double value, std::string sim, bool shouldUpdateSim);
     int getValue();
     void setValue(int value);
     std::string getSim();

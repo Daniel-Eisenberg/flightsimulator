@@ -15,60 +15,60 @@ double Value::calculate() {
     return this->value;
 }
 
-Variable::Variable(string name, double value) {
+Var::Var(string name, double value) {
     this->value = value;
     this->name = name;
 }
 
-double Variable::calculate() {
+double Var::calculate() {
     return this->value;
 }
 
-string Variable::getName() {
+string Var::getName() {
     return this->name;
 }
 
-Variable& Variable::clone() {
-    Variable *variableCpy = new Variable(this->name, this->value);
+Var& Var::clone() {
+    Var *variableCpy = new Var(this->name, this->value);
     return *variableCpy;
 }
 
-Variable& Variable::operator+(Variable *v) {
+Var& Var::operator+(Var *v) {
     this->value = this->value + v->value;
     return *this;
 }
 
-Variable& Variable::operator-(Variable *v) {
+Var& Var::operator-(Var *v) {
     this->value = this->value - v->value;
     return *this;
 }
 
-Variable& Variable::operator++() {
+Var& Var::operator++() {
     ++this->value;
     return *this;
 }
 
-Variable& Variable::operator--() {
+Var& Var::operator--() {
     --this->value;
     return *this;
 }
 
-Variable& Variable::operator++(int) {
+Var& Var::operator++(int) {
     this->value++;
     return *this;
 }
 
-Variable& Variable::operator--(int) {
+Var& Var::operator--(int) {
     this->value--;
     return *this;
 }
 
-Variable& Variable::operator+=(Variable *v) {
+Var& Var::operator+=(Var *v) {
     this->value += v->value;
     return *this;
 }
 
-Variable& Variable::operator-=(Variable *v) {
+Var& Var::operator-=(Var *v) {
     this->value -= v->value;
     return *this;
 }
