@@ -169,7 +169,7 @@ Expression* Interpreter::reversePolishNotation(queue<Token> shunting_yard) {
             expressions.push(new Value(stod(shunting_yard.front().getValue())));
             shunting_yard.pop();
         } else if (shunting_yard.front().isVariable()) {
-            expressions.push(new Variable(shunting_yard.front().getValue(), getVariable(shunting_yard.front().getValue())));
+            expressions.push(new Var(shunting_yard.front().getValue(), getVariable(shunting_yard.front().getValue())));
             shunting_yard.pop();
         } else {
             e1 = expressions.top();
@@ -217,3 +217,5 @@ Expression* Interpreter::reversePolishNotation(queue<Token> shunting_yard) {
 Interpreter::~Interpreter(){
 }
 
+Interpreter::Interpreter(){
+}

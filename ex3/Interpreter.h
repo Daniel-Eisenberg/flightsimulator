@@ -13,8 +13,9 @@
 class Interpreter {
     std::map<string, string> variables_map;
 public:
-    virtual Expression* interpret(string arg);
+    Interpreter();
     virtual ~Interpreter();
+    virtual Expression* interpret(string arg);
     Expression* reversePolishNotation(queue<Token> shunting_yard);
     queue<Token> shuntingYard(string arg);
     void setVariables(string arg);

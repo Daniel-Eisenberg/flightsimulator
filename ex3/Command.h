@@ -11,11 +11,8 @@
 
 class Command {
     int args = 2;
-protected:
-    static std::map<std::string, Variable*> variables_map;
 public:
     int virtual execute(std::vector<std::string> *list, int index);
-//    void setVarLogic(std::vector<std::string> *list, int i, std::string varName);
 };
 
 class OpenServerCommand : public Command {
