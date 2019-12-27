@@ -3,4 +3,4 @@ project(ex3)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(ex3 main.cpp Tcp_Server.cpp Tcp_Server.h Client_Side.cpp Client_Side.h)
+add_executable(ex3 main.cpp Tcp_Server.cpp Tcp_Server.h Client_Side.cpp Client_Side.h ex3.h)
