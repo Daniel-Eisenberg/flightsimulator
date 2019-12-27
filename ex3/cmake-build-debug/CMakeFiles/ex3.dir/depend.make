@@ -9,5 +9,6 @@ CMakeFiles/ex3.dir/Tcp_Server.cpp.o: ../Tcp_Server.h
 
 CMakeFiles/ex3.dir/main.cpp.o: ../Client_Side.h
 CMakeFiles/ex3.dir/main.cpp.o: ../Tcp_Server.h
+CMakeFiles/ex3.dir/main.cpp.o: ../ex3.h
 CMakeFiles/ex3.dir/main.cpp.o: ../main.cpp
 

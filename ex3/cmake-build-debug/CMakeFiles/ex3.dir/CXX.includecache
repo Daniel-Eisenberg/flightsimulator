@@ -6,12 +6,6 @@
 
 #IncludeRegexTransform: 
 
-/Users/danieleisenberg/CLionProjects/flightsimulator/ex3/Client_Side.cpp
-arpa/inet.h
--
-Client_Side.h
-/Users/danieleisenberg/CLionProjects/flightsimulator/ex3/Client_Side.h
-
 /Users/danieleisenberg/CLionProjects/flightsimulator/ex3/Client_Side.h
 sys/socket.h
 -
@@ -26,27 +20,37 @@ netinet/in.h
 arpa/inet.h
 -
 
-/Users/danieleisenberg/CLionProjects/flightsimulator/ex3/Tcp_Server.cpp
+/Users/danieleisenberg/CLionProjects/flightsimulator/ex3/Tcp_Server.h
+sys/socket.h
+-
+string
+-
+iostream
+-
+unistd.h
+-
+netinet/in.h
+-
+
+/Users/danieleisenberg/CLionProjects/flightsimulator/ex3/ex3.h
+iostream
+-
+string
+-
 Tcp_Server.h
 /Users/danieleisenberg/CLionProjects/flightsimulator/ex3/Tcp_Server.h
-
-/Users/danieleisenberg/CLionProjects/flightsimulator/ex3/Tcp_Server.h
-sys/socket.h
--
-string
--
+Client_Side.h
+/Users/danieleisenberg/CLionProjects/flightsimulator/ex3/Client_Side.h
 iostream
 -
-unistd.h
+fstream
 -
-netinet/in.h
+sstream
+-
+vector
 -
 
 /Users/danieleisenberg/CLionProjects/flightsimulator/ex3/main.cpp
-iostream
--
-Tcp_Server.h
-/Users/danieleisenberg/CLionProjects/flightsimulator/ex3/Tcp_Server.h
-Client_Side.h
-/Users/danieleisenberg/CLionProjects/flightsimulator/ex3/Client_Side.h
+ex3.h
+/Users/danieleisenberg/CLionProjects/flightsimulator/ex3/ex3.h
 

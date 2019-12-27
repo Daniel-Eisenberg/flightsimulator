@@ -92,6 +92,9 @@
 		<Unit filename="/Users/danieleisenberg/CLionProjects/flightsimulator/ex3/Tcp_Server.h">
 			<Option target="ex3"/>
 		</Unit>
+		<Unit filename="/Users/danieleisenberg/CLionProjects/flightsimulator/ex3/ex3.h">
+			<Option target="ex3"/>
+		</Unit>
 		<Unit filename="/Users/danieleisenberg/CLionProjects/flightsimulator/ex3/main.cpp">
 			<Option target="ex3"/>
 		</Unit>
