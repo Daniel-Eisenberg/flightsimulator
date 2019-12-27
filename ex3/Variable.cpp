@@ -4,7 +4,7 @@
 
 #include "Variable.h"
 
-Variable::Variable(int value, std::string sim, bool shouldUpdateSim) {
+Variable::Variable(double value, std::string sim, bool shouldUpdateSim) {
     this->value = value;
     this->sim = sim;
     this->shouldUpdateSim = shouldUpdateSim;
