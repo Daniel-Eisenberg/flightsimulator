@@ -4,12 +4,13 @@
 
 #include "Variable.h"
 
-Variable::Variable(std::string sim, bool shouldUpdateSim) {
+Variable::Variable(std::string sim, bool shouldUpdateSim, int scope) {
     this->sim = sim;
     this->shouldUpdateSim = shouldUpdateSim;
     if (sim != "")
         this->value = getValueFromServer(sim);
     this->valueInit = true;
+    this->scope = scope;
 }
 
 void Variable::setValue(double value) {
@@ -19,19 +20,13 @@ void Variable::setValue(double value) {
     this->valueInit = true;
 }
 
-double Variable::getValue() {
+double Variable::getValue(int scope) {
     if (valueInit)
         return value;
+    if (this->scope != scope)
+        throw "Variable is out of scope!";
     else
         throw "Uninitilization error!";
-}
-
-std::string Variable::getSim() {
-    return sim;
-}
-
-bool Variable::getShouldUpdateSim() {
-    return shouldUpdateSim;
 }
 
 double Variable::getValueFromServer(std::string sim) {
@@ -40,4 +35,8 @@ double Variable::getValueFromServer(std::string sim) {
 
 void Variable::updateValueToServer(double value, std::string sim) {
 
+}
+
+int Variable::getScope() {
+    return this->scope;
 }

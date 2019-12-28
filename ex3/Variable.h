@@ -13,15 +13,14 @@ class Variable {
     bool valueInit = false;
     std::string sim = "";
     bool shouldUpdateSim = false;
-    int scope;
-public:
-    Variable(std::string sim, bool shouldUpdateSim);
-    double getValue();
-    void setValue(double value);
-    std::string getSim();
-    bool getShouldUpdateSim();
+    int scope = 0;
     double getValueFromServer(std::string sim);
     void updateValueToServer(double value, std::string sim);
+public:
+    Variable(std::string sim, bool shouldUpdateSim, int scope);
+    double getValue(int scope);
+    int getScope();
+    void setValue(double value);
 };
 
 

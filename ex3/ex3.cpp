@@ -204,23 +204,24 @@ void setMap() {
     );
 }
 
-void ex3::parser(vector<string> *params, unsigned index, bool scope) {
+void ex3::parser(vector<string> *params, unsigned index, bool isScoped, int scope) {
     setMap();
     int stopScope = index + Command::findStopSign(params, index, "}") - 2;
-    string stop = params->at(stopScope);
+
 
     while (index < params -> size()) {
-        if (!scope) {
+        if (!isScoped) {
             string current_command = params -> at(index);
             cout << "Command=" << current_command <<" Index=" << index << endl;
-            index += command_map.at(current_command)->execute(params, index);
+            index += command_map.at(current_command)->execute(params, index, scope);
             index++;
         } else if (index < stopScope) {
             string current_command = params->at(index);
             cout << "Scoped- Command=" << current_command << " Index=" << index << endl;
-            index += command_map.at(current_command)->execute(params, index);
+            index += command_map.at(current_command)->execute(params, index, scope);
             index++;
         } else
             break;
     }
+    Command::clearVariablesScope(scope);
 }

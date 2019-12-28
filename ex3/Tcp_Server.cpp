@@ -4,7 +4,7 @@
 
 #include "Tcp_Server.h"
 
-int Tcp_Server::create_socket() {
+int Tcp_Server::create_socket(int port) {
 
         int socket1 = socket(AF_INET, SOCK_STREAM, 0);
         if (socket1 == -1) {
@@ -15,7 +15,7 @@ int Tcp_Server::create_socket() {
         sockaddr_in address;
         address.sin_family = AF_INET;
         address.sin_addr.s_addr = INADDR_ANY;
-        address.sin_port = htons(PORT);
+        address.sin_port = htons(port);
 
 
         // bind
