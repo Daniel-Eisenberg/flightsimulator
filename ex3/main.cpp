@@ -17,6 +17,7 @@ int main(int argc, char *argv[]) {
         cout << x << ", " << endl;
     }
 
+    ex3::parser(&a, 0, false);
 
     return 0;
 }

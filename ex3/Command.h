@@ -10,9 +10,9 @@
 #include "Variable.h"
 
 class Command {
-    int args = 2;
 public:
     int virtual execute(std::vector<std::string> *list, int index);
+    int static findStopSign(std::vector<std::string> *list, int i, const std::string &sign);
 };
 
 class OpenServerCommand : public Command {

@@ -5,7 +5,7 @@
 #include "ex3.h"
 
 
-static unordered_map<string, Command> command_map;
+static unordered_map<string, Command*> command_map;
 
 vector<string> split(const string& s, char delimiter) {
     vector<string> tokens;
@@ -125,13 +125,13 @@ vector<string> ex3::lexerCode(std::string filename) {
                 params.push_back("sim");
                 unsigned long start_pos = line.find('(');
                 unsigned long end_pos = line.find(')');
-                params.push_back(line.substr(start_pos + 1, end_pos - 1));
+                params.push_back(line.substr(start_pos + 1, end_pos - start_pos - 1));
             } else if (line.find("<-") != std::string::npos) {
                 params.push_back("<-");
                 params.push_back("sim");
                 unsigned long start_pos = line.find('(');
                 unsigned long end_pos = line.find(')');
-                params.push_back(line.substr(start_pos + 1, end_pos - 1));
+                params.push_back(line.substr(start_pos + 1, end_pos  - start_pos - 1));
             } else {
                 params.push_back("=");
                 vector<string> temp = split(line, '=');
@@ -184,14 +184,14 @@ vector<string> ex3::lexerCode(std::string filename) {
 
 void setMap() {
 
-    OpenServerCommand c1;
-    ConnectCommand c2;
-    DefineVarCommand c3;
-    SetVarCommand c4;
-    WhileLoopCommand c5;
-    IfCommand c6;
-    PrintCommand c7;
-    SleepCommand c8;
+    OpenServerCommand *c1 = new OpenServerCommand();
+    ConnectCommand *c2 = new ConnectCommand();
+    DefineVarCommand *c3 = new DefineVarCommand();
+    SetVarCommand *c4 = new SetVarCommand();
+    WhileLoopCommand *c5 = new WhileLoopCommand();
+    IfCommand *c6 = new IfCommand();
+    PrintCommand *c7 = new PrintCommand();
+    SleepCommand *c8 = new SleepCommand();
     command_map.insert(
             {{"openDataServer", c1},
             {"connectControlClient", c2},
@@ -206,13 +206,21 @@ void setMap() {
 
 void ex3::parser(vector<string> *params, unsigned index, bool scope) {
     setMap();
+    int stopScope = index + Command::findStopSign(params, index, "}") - 2;
+    string stop = params->at(stopScope);
+
     while (index < params -> size()) {
         if (!scope) {
             string current_command = params -> at(index);
-            index += command_map.at(current_command).execute(params, index);
+            cout << "Command=" << current_command <<" Index=" << index << endl;
+            index += command_map.at(current_command)->execute(params, index);
             index++;
-        } else {
+        } else if (index < stopScope) {
+            string current_command = params->at(index);
+            cout << "Scoped- Command=" << current_command << " Index=" << index << endl;
+            index += command_map.at(current_command)->execute(params, index);
+            index++;
+        } else
             break;
-        }
     }
 }
