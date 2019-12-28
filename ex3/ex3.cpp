@@ -20,15 +20,18 @@ vector<string> split(const string& s, char delimiter) {
     return tokens;
 }
 
-std::vector<std::string> split(std::string str,std::string sep){
-    char* cstr=const_cast<char*>(str.c_str());
-    char* current;
+std::vector<std::string> split(std::string str,std::string delimiter){
+
     std::vector<std::string> arr;
-    current=strtok(cstr,sep.c_str());
-    while(current!=NULL){
-        arr.push_back(current);
-        current=strtok(NULL,sep.c_str());
+    size_t pos = 0;
+    std::string token;
+    while ((pos = str.find(delimiter)) != std::string::npos) {
+        token = str.substr(0, pos);
+        if (token != "")
+            arr.push_back(token);
+        str.erase(0, pos + delimiter.length());
     }
+    arr.push_back(str);
     return arr;
 }
 
