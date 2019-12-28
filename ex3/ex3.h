@@ -22,7 +22,7 @@ class ex3 {
 public:
     OpenServerCommand c;
     static vector<string> lexerCode(std::string filename);
-    static void parser(vector<string> *params, unsigned index, bool scope);
+    static void parser(vector<string> *params, unsigned index, bool isScoped, int scope);
 };
 
 #endif //EX3_EX3_H
