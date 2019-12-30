@@ -10,11 +10,10 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include<arpa/inet.h>
-#define PORT 5402
 
 class Client_Side {
 public:
-    int create();
+    static int create(const char* ip, const char* port);
 };
 
 

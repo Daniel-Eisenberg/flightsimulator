@@ -15,7 +15,7 @@ class Tcp_Server {
 
 public:
 // create socket
-    int create_socket();
+    static int create_socket(int port);
 };
 
 

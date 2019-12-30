@@ -4,9 +4,10 @@ int main(int argc, char *argv[]) {
 
 
     std::string filename = argv[argc - 1];
+    filename = "fly.txt";
     vector<string> a;
     try {
-        a = lexerCode(filename);
+        a = ex3::lexerCode(filename);
     } catch (const char* e){
         return -20;
     }
@@ -16,6 +17,7 @@ int main(int argc, char *argv[]) {
         cout << x << ", " << endl;
     }
 
+    ex3::parser(&a, 0, false, 0);
 
     return 0;
 }
