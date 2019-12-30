@@ -93,7 +93,7 @@ void Command::clearVariablesScope(int scope) {
 int OpenServerCommand::execute(std::vector<std::string> *list, int i, int scope) {
     Tcp_Server *server = new Tcp_Server();
     int port = stoi(list->at(i + 1));
-    //std::thread serverThread(&Tcp_Server::create_socket, server, port);
+//    std::thread serverThread(&Tcp_Server::create_socket, server, port);
     delete server;
     return args;
 }
