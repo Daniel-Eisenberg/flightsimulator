@@ -8,6 +8,7 @@
 #include "ex1.h"
 #include "ex3.h"
 #include "Expression.h"
+#include "DatabaseManager.h"
 #include <iostream>
 #include <thread>
 
@@ -15,7 +16,7 @@ using namespace std;
 // Local static class methods
 // ---------------------------
 
-static std::map<std::string, Variable*> variables_map;
+//static std::map<std::string, Variable*> variables_map;
 std::mutex mServer;
 
 int parseMathExp(std::vector<std::string> *list, int i, int scope) {
@@ -25,7 +26,7 @@ int parseMathExp(std::vector<std::string> *list, int i, int scope) {
         i++;
     while (list->at(i) != "$") {
         if (isalpha(list->at(i)[0]))
-            mathExp += to_string(variables_map[list->at(i)]->getValue(scope));
+            mathExp += to_string(DatabaseManager::get().getFromVariablesMap(list->at(i)).getValue(scope));
         else
             mathExp += list->at(i);
         i++;
@@ -38,9 +39,28 @@ int parseMathExp(std::vector<std::string> *list, int i, int scope) {
 }
 
 // Finds the next occurrence of a string in the array
-int Command::findStopSign(std::vector<std::string> *list, int i, const string& sign) {
+int Command::findSign(std::vector<std::string> *list, int i, const string& sign) {
     int args = 1;
     while (list->at(i) != sign) {
+        i++;
+        args++;
+    }
+    args++;
+
+    return args;
+}
+
+// Finds the next occurrence of a string in the array
+int Command::findStopSignFunction(std::vector<std::string> *list, int i) {
+    int args = 1; int innerParenthesis = 1;
+    int openParen = findSign(list, i, "{");
+    i = i + openParen + 1;
+    while (list->at(i) != "}" && innerParenthesis != 0) {
+        if (list->at(i) == "{") {
+            innerParenthesis++;
+        }
+        if (list->at(i) == "}" && --innerParenthesis == 0)
+            break;
         i++;
         args++;
     }
@@ -52,7 +72,7 @@ int Command::findStopSign(std::vector<std::string> *list, int i, const string& s
 // Return boolean evaluation of a logical expression
 bool static evaluateLogicalExp(std::vector<std::string> *list, int i, int scope) {
     int leftStart = i;
-    int leftEnd = i + Command::findStopSign(list, leftStart + 1, "$");
+    int leftEnd = i + Command::findSign(list, leftStart + 1, "$");
     string defType = list->at(leftEnd);
     int rightStart = leftEnd + 1;
 
@@ -82,14 +102,6 @@ bool static evaluateLogicalExp(std::vector<std::string> *list, int i, int scope)
 int Command::execute(std::vector<std::string> *list, int i, int scope) {
 }
 
-// Clear the variables scope that we leave (finishing a method etc.)
-void Command::clearVariablesScope(int scope) {
-    for (auto&& [key, value] : variables_map) {
-        if (value->getScope() >= scope)
-            variables_map.erase(key);
-    }
-}
-
 int OpenServerCommand::execute(std::vector<std::string> *list, int i, int scope) {
     Tcp_Server *server = new Tcp_Server();
     int port = stoi(list->at(i + 1));
@@ -110,20 +122,20 @@ int DefineVarCommand::execute(std::vector<std::string> *list, int i, int scope) 
     if (defType == "<-") {// Define a variable that gets data from simulator
         string sim = list->at(i + 3);
         var = new Variable(sim, false, scope);
-        variables_map[varName] = var;
+        DatabaseManager::get().putToVariablesMap(varName, var);
         args = 4;
     } else if (defType == "->") {// Define a variable that sets data to the simulator
         string sim = list->at(i + 3);
         var = new Variable(sim, true, scope);
-        variables_map[varName] = var;
+        DatabaseManager::get().putToVariablesMap(varName, var);
         args = 4;
     } else if (defType == "=") {// Define a variable that sets data to the simulator
         if (list->at(i + 3) == "$") { // Calc and set a math expression
             double value = parseMathExp(list, i + 4, scope);
             var = new Variable("", false, scope);
             var->setValue(value);
-            variables_map[varName] = var;
-            args = 2 + findStopSign(list, i + 4, "$");
+            DatabaseManager::get().putToVariablesMap(varName, var);
+            args = 2 + findSign(list, i + 4, "$");
         } else
             cout << "ERROR no math exp $ after = tag.";
     }
@@ -137,8 +149,8 @@ int SetVarCommand::execute(std::vector<std::string> *list, int i, int scope)  {
 
     if (list->at(i + 3) == "$") { // Calc and set a math expression
         int value = parseMathExp(list, i + 4, scope);
-        variables_map[varName]->setValue(value);
-        args = 2 + findStopSign(list, i + 4, "$");
+        DatabaseManager::get().getFromVariablesMap(varName).setValue(value);
+        args = 2 + findSign(list, i + 4, "$");
     } else
         cout << "ERROR no math exp $ after = tag.";
 
@@ -146,8 +158,8 @@ int SetVarCommand::execute(std::vector<std::string> *list, int i, int scope)  {
 }
 
 int WhileLoopCommand::execute(std::vector<std::string> *list, int i, int scope)  {
-    args = 1 + findStopSign(list, i + 1, "}");
-    int cmd = findStopSign(list, i + 1, "{");
+    args = 1 + findSign(list, i + 1, "}");
+    int cmd = findSign(list, i + 1, "{");
     int logicalExpIndex = i + 1;
     while(evaluateLogicalExp(list, logicalExpIndex, scope) && list->at(i) != "}") {
         ex3::parser(list, i + cmd, true, scope + 1);
@@ -156,8 +168,8 @@ int WhileLoopCommand::execute(std::vector<std::string> *list, int i, int scope) 
 }
 
 int IfCommand::execute(std::vector<std::string> *list, int i, int scope)  {
-    args = 1 + findStopSign(list, i + 1, "}");
-    int cmd = findStopSign(list, i + 1, "{");
+    args = 1 + findSign(list, i + 1, "}");
+    int cmd = findSign(list, i + 1, "{");
     int logicalExpIndex = i + 1;
     if(evaluateLogicalExp(list, logicalExpIndex, scope)) {
         ex3::parser(list, i + cmd, true, scope + 1);
@@ -166,19 +178,23 @@ int IfCommand::execute(std::vector<std::string> *list, int i, int scope)  {
 }
 
 int FunctionCommand::execute(std::vector<std::string> *list, int i, int scope)  {
-    args = 1 + findStopSign(list, i + 1, "}");
+    args = 1 + findStopSignFunction(list, i + 1);
+    int cmd = findSign(list, i + 1, "{");
+    ex3::parser(list, i + cmd, true, scope + 1);
     return args;
 }
 
 int PrintCommand::execute(std::vector<std::string> *list, int i, int scope)  {
-    if (variables_map.count(list->at(i + 1)) > 0)
-        cout << variables_map[list->at(i + 1)]->getValue(scope) << endl;
+    string data = list->at(i + 1);
+    if (DatabaseManager::get().isVariableExist(data) && data[0] != '\"')
+        cout << DatabaseManager::get().getFromVariablesMap(data).getValue(scope) << endl;
     else
-        cout << list->at(i + 1) << endl;
+        cout << data << endl;
     return args;
 }
 
 int SleepCommand::execute(std::vector<std::string> *list, int i, int scope)  {
-    //sleep(stod(list->at(i + 1)));
+    string data = list->at(i + 1);
+    sleep(stod(data));
     return args;
 }

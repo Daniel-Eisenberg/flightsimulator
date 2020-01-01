@@ -17,7 +17,6 @@ class DatabaseManager {
     std::map<std::string, Variable*> *variablesMap;
     std::map<std::string, double> *simVariablesMap;
     std::vector<std::string> *simArray;
-    static DatabaseManager *databaseManager;
     DatabaseManager();
 public:
     static DatabaseManager& get();
@@ -26,8 +25,10 @@ public:
     void addToSimCommandsQ(std::string command);
     void putToVariablesMap(std::string varName, Variable* variable);
     Variable getFromVariablesMap(std::string varName);
+    bool isVariableExist(std::string varName);
     double getFromSimVariablesMap(std::string varName);
     void initSimVariablesMap();
+    void clearVariablesScope(int scope);
 };
 
 

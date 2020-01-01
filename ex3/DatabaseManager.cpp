@@ -3,7 +3,6 @@
 //
 
 #include "DatabaseManager.h"
-#include <string>
 #include <queue>
 #include <map>
 #include "Variable.h"
@@ -19,8 +18,8 @@ DatabaseManager::DatabaseManager() {
 
 void DatabaseManager::initSimVariablesMap() {
     *simArray = {
-            "/instrumentation/airspeed-indicator/indicated-speed-kt",
-            "/sim/time/warp",
+             "/instrumentation/airspeed-indicator/indicated-speed-kt",
+             "/sim/time/warp",
              "/controls/switches/magnetos",
              "/instrumentation/heading-indicator/offset-deg",
              "/instrumentation/altimeter/indicated-altitude-ft",
@@ -57,7 +56,6 @@ void DatabaseManager::initSimVariablesMap() {
              "/engines/engine/rpm"
     };
 
-
     for (string sim : *simArray) {
         (*simVariablesMap)[sim] = 0;
     }
@@ -73,7 +71,6 @@ void DatabaseManager::updateDataFromSim(std::vector<double> dataFromSim) {
         double value = dataFromSim[i];
         (*simVariablesMap)[sim] = value;
     }
-
 }
 
 void DatabaseManager::addToSimCommandsQ(std::string command) {
@@ -93,7 +90,18 @@ double DatabaseManager::getFromSimVariablesMap(std::string varName) {
 }
 
 DatabaseManager& DatabaseManager::get() {
-    if (databaseManager == nullptr)
-        databaseManager = new DatabaseManager();
-    return *databaseManager;
+    static DatabaseManager databaseManager;
+    return databaseManager;
+}
+
+bool DatabaseManager::isVariableExist(std::string varName) {
+    return variablesMap->count(varName) > 0;
+}
+
+// Clear the variables scope that we leave (finishing a method etc.)
+void DatabaseManager::clearVariablesScope(int scope) {
+    for (auto&& [varName, variable] : *variablesMap) {
+        if (variable->getScope() >= scope)
+            (*variablesMap).erase(varName);
+    }
 }

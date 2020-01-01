@@ -20,7 +20,8 @@ void Variable::setValue(double value) {
 }
 
 double Variable::getValue(int scope) {
-    this->value = getValueFromServer(sim);
+    if (sim != "")
+        this->value = getValueFromServer(sim);
 
     if (this->scope != scope)
         throw "Variable is out of scope!";
@@ -29,12 +30,12 @@ double Variable::getValue(int scope) {
 }
 
 double Variable::getValueFromServer(std::string sim) {
-    DatabaseManager databaseManager = DatabaseManager.get();
-    return 0;
+    return DatabaseManager::get().getFromSimVariablesMap(sim);
 }
 
 void Variable::updateValueToServer(double value, std::string sim) {
-
+    std::string command = "set " + sim + " value";
+    DatabaseManager::get().addToSimCommandsQ(command);
 }
 
 int Variable::getScope() {

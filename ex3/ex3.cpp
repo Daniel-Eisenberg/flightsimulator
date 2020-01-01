@@ -3,6 +3,7 @@
 //
 
 #include "ex3.h"
+#include "DatabaseManager.h"
 
 
 static unordered_map<string, Command*> command_map;
@@ -209,7 +210,7 @@ void setMap() {
 
 void ex3::parser(vector<string> *params, unsigned index, bool isScoped, int scope) {
     setMap();
-    int stopScope = index + Command::findStopSign(params, index, "}") - 2;
+    int stopScope = index + Command::findSign(params, index, "}") - 2;
 
 
     while (index < params -> size()) {
@@ -226,5 +227,5 @@ void ex3::parser(vector<string> *params, unsigned index, bool isScoped, int scop
         } else
             break;
     }
-    Command::clearVariablesScope(scope);
+    DatabaseManager::get().clearVariablesScope(scope);
 }
