@@ -6,6 +6,7 @@
 #include "Client_Side.h"
 #include <vector>
 #include "DatabaseManager.h"
+#include "Command.h"
 #include <queue>
 //hi
 std::string Message_to_server(std::vector<std::string> &values) {
@@ -40,7 +41,7 @@ std::string Message_to_server(std::vector<std::string> &values) {
             std:: cout <<"client connect to server" << std::endl;
         }
         while (true) {
-            std::queue<std::string> queue = DatabaseManager::get().getSimCommandsQ();
+            std::queue<std::string> queue = *DatabaseManager::get().getSimCommandsQ();
             std::string s;
             for (int i = 0; i < queue.size(); i++) {
                 const char* message = queue.back().c_str();
@@ -55,6 +56,8 @@ std::string Message_to_server(std::vector<std::string> &values) {
                 char buffer[1024] = {0};
                 int valread = read(client_socket, buffer, 1024);
                 std::cout << buffer << std::endl;
+                if (flag)
+                    flag = false;
                 close(client_socket);
             }
         }

@@ -18,6 +18,8 @@ using namespace std;
 
 //static std::map<std::string, Variable*> variables_map;
 std::mutex mServer;
+bool flag = true;
+
 
 int parseMathExp(std::vector<std::string> *list, int i, int scope) {
     string mathExp;
@@ -38,7 +40,7 @@ int parseMathExp(std::vector<std::string> *list, int i, int scope) {
     return value;
 }
 
-// Finds the next occurrence of a string in the array
+// Finds the next occurrence of a string in the array.
 int Command::findSign(std::vector<std::string> *list, int i, const string& sign) {
     int args = 1;
     while (list->at(i) != sign) {
@@ -51,16 +53,15 @@ int Command::findSign(std::vector<std::string> *list, int i, const string& sign)
 }
 
 // Finds the next occurrence of a string in the array
-int Command::findStopSignFunction(std::vector<std::string> *list, int i) {
+int Command::findClosingBracket(std::vector<std::string> *list, int i) {
     int args = 1; int innerParenthesis = 1;
     int openParen = findSign(list, i, "{");
     i = i + openParen + 1;
-    while (list->at(i) != "}" && innerParenthesis != 0) {
-        if (list->at(i) == "{") {
+    while (innerParenthesis > 0) {
+        if (list->at(i) == "{")
             innerParenthesis++;
-        }
-        if (list->at(i) == "}" && --innerParenthesis == 0)
-            break;
+        if (list->at(i) == "}")
+            innerParenthesis--;
         i++;
         args++;
     }
@@ -105,16 +106,17 @@ int Command::execute(std::vector<std::string> *list, int i, int scope) {
 int OpenServerCommand::execute(std::vector<std::string> *list, int i, int scope) {
     Tcp_Server *server = new Tcp_Server();
     int port = stoi(list->at(i + 1));
-    std::thread serverThread(&Tcp_Server::create_socket, server, port);
+    std::thread serverThread(&Tcp_Server::create_socket, port);
+    while(flag){}
     delete server;
     return args;
 }
 
 int ConnectCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     Client_Side *client = new Client_Side();
-    int ip = stoi(list->at(i + 1));
-    int port = stoi(list->at(i + 2));
-    std::thread connectionThread(&Client_Side::create, client, ip, port);
+    const char* ip = list->at(i + 1).c_str();
+    const char* port = list->at(i + 2).c_str();
+    std::thread connectionThread(&Client_Side::create, ip, port);
     return args;
 }
 
@@ -161,29 +163,29 @@ int SetVarCommand::execute(std::vector<std::string> *list, int i, int scope)  {
 }
 
 int WhileLoopCommand::execute(std::vector<std::string> *list, int i, int scope)  {
-    args = 1 + findSign(list, i + 1, "}");
-    int cmd = findSign(list, i + 1, "{");
+    int openParen = findSign(list, i, "{");
+    args = 1 + findClosingBracket(list, i + openParen + 1);
     int logicalExpIndex = i + 1;
     while(evaluateLogicalExp(list, logicalExpIndex, scope) && list->at(i) != "}") {
-        ex3::parser(list, i + cmd, true, scope + 1);
+        ex3::parser(list, i + openParen, true, scope + 1);
     }
     return args;
 }
 
 int IfCommand::execute(std::vector<std::string> *list, int i, int scope)  {
-    args = 1 + findSign(list, i + 1, "}");
-    int cmd = findSign(list, i + 1, "{");
+    int openParen = findSign(list, i, "{");
+    args = 1 + findClosingBracket(list, i + openParen + 1);
     int logicalExpIndex = i + 1;
     if(evaluateLogicalExp(list, logicalExpIndex, scope)) {
-        ex3::parser(list, i + cmd, true, scope + 1);
+        ex3::parser(list, i + openParen, true, scope + 1);
     }
     return args;
 }
 
 int FunctionCommand::execute(std::vector<std::string> *list, int i, int scope)  {
-    args = 1 + findStopSignFunction(list, i + 1);
-    int cmd = findSign(list, i + 1, "{");
-    ex3::parser(list, i + cmd, true, scope + 1);
+    int openParen = findSign(list, i, "{");
+    args = 1 + findClosingBracket(list, i + openParen + 1);
+    ex3::parser(list, i + openParen, true, scope + 1);
     return args;
 }
 

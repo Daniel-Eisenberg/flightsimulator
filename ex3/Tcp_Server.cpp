@@ -8,22 +8,8 @@
 #include <vector>
 #include "ex3.h"
 #include "DatabaseManager.h"
-extern bool flag;
 
-std::vector<std::string> split(std::string str,std::string delimiter){
 
-    std::vector<std::string> arr;
-    size_t pos = 0;
-    std::string token;
-    while ((pos = str.find(delimiter)) != std::string::npos) {
-        token = str.substr(0, pos);
-        if (token != "")
-            arr.push_back(token);
-        str.erase(0, pos + delimiter.length());
-    }
-    arr.push_back(str);
-    return arr;
-}
 
 
 
@@ -85,7 +71,7 @@ int Tcp_Server::create_socket(int port) {
                 return -4;
             }
             char* line = getline(client_socket);
-            vector<string> values = split(line, " ");
+            vector<string> values = ex3::split(line, " ");
             vector<double> double_values;
             for (string x : values) {
                 double_values.push_back(stod(x));

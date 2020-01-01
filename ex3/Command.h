@@ -4,16 +4,15 @@
 
 #ifndef EX3_COMMAND_H
 #define EX3_COMMAND_H
-
 #include <list>
 #include <map>
 #include "Variable.h"
-
+extern bool flag;
 class Command {
 public:
     int virtual execute(std::vector<std::string> *list, int index, int scope);
     int static findSign(std::vector<std::string> *list, int i, const std::string &sign);
-    int static findStopSignFunction(std::vector<std::string> *list, int i);
+    int static findClosingBracket(std::vector<std::string> *list, int i);
 };
 
 class OpenServerCommand : public Command {
