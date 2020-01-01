@@ -61,8 +61,8 @@ void DatabaseManager::initSimVariablesMap() {
     }
 }
 
-std::queue<std::string> DatabaseManager::getSimCommandsQ() {
-    return *simCommandsQ;
+std::queue<std::string>* DatabaseManager::getSimCommandsQ() {
+    return simCommandsQ;
 }
 
 void DatabaseManager::updateDataFromSim(std::vector<double> dataFromSim) {

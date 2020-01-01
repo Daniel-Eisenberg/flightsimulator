@@ -20,7 +20,7 @@ class DatabaseManager {
     DatabaseManager();
 public:
     static DatabaseManager& get();
-    std::queue<std::string> getSimCommandsQ();
+    std::queue<std::string>* getSimCommandsQ();
     void updateDataFromSim(std::vector<double> dataFromSim);
     void addToSimCommandsQ(std::string command);
     void putToVariablesMap(std::string varName, Variable* variable);
