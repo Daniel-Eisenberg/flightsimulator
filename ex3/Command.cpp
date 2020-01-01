@@ -93,13 +93,16 @@ void Command::clearVariablesScope(int scope) {
 int OpenServerCommand::execute(std::vector<std::string> *list, int i, int scope) {
     Tcp_Server *server = new Tcp_Server();
     int port = stoi(list->at(i + 1));
-//    std::thread serverThread(&Tcp_Server::create_socket, server, port);
+    std::thread serverThread(&Tcp_Server::create_socket, server, port);
     delete server;
     return args;
 }
 
 int ConnectCommand::execute(std::vector<std::string> *list, int i, int scope)  {
-    std::thread connectionThread();
+    Client_Side *client = new Client_Side();
+    int ip = stoi(list->at(i + 1));
+    int port = stoi(list->at(i + 2));
+    std::thread connectionThread(&Client_Side::create, client, ip, port);
     return args;
 }
 
