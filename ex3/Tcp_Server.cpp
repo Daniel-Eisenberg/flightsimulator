@@ -71,7 +71,7 @@ int Tcp_Server::create_socket(int port) {
                 return -4;
             }
             char* line = getline(client_socket);
-            vector<string> values = ex3::split(line, " ");
+            vector<string> values = ex3::split(line, ",");
             vector<double> double_values;
             for (string x : values) {
                 double_values.push_back(stod(x));
