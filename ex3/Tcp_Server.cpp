@@ -76,7 +76,8 @@ int Tcp_Server::create_socket(int port) {
             for (string x : values) {
                 double_values.push_back(stod(x));
             }
-            DatabaseManager::get().updateDataFromSim(double_values);
+            if (double_values.size() == 36)
+                DatabaseManager::get().updateDataFromSim(double_values);
             sleep(5);
             if (flag)
                 flag = false;
