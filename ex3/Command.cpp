@@ -18,6 +18,8 @@ using namespace std;
 
 //static std::map<std::string, Variable*> variables_map;
 std::mutex mServer;
+static bool flag = true;
+
 
 int parseMathExp(std::vector<std::string> *list, int i, int scope) {
     string mathExp;
@@ -105,16 +107,17 @@ int Command::execute(std::vector<std::string> *list, int i, int scope) {
 int OpenServerCommand::execute(std::vector<std::string> *list, int i, int scope) {
     Tcp_Server *server = new Tcp_Server();
     int port = stoi(list->at(i + 1));
-    std::thread serverThread(&Tcp_Server::create_socket, server, port);
+    std::thread serverThread(&Tcp_Server::create_socket, port);
+    while(flag){}
     delete server;
     return args;
 }
 
 int ConnectCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     Client_Side *client = new Client_Side();
-    string ip = list->at(i + 1);
-    int port = stoi(list->at(i + 2));
-    std::thread connectionThread(&Client_Side::create, client, ip, port);
+    const char* ip = list->at(i + 1).c_str();
+    const char* port = list->at(i + 2).c_str();
+    std::thread connectionThread(&Client_Side::create, ip, port);
     return args;
 }
 

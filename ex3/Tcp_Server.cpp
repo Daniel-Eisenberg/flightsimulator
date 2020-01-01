@@ -8,7 +8,6 @@
 #include <vector>
 #include "ex3.h"
 #include "DatabaseManager.h"
-extern bool flag;
 
 std::vector<std::string> split(std::string str,std::string delimiter){
 
