@@ -12,8 +12,8 @@
 class Command {
 public:
     int virtual execute(std::vector<std::string> *list, int index, int scope);
-    int static findStopSign(std::vector<std::string> *list, int i, const std::string &sign);
-    static void clearVariablesScope(int scope);
+    int static findSign(std::vector<std::string> *list, int i, const std::string &sign);
+    int static findStopSignFunction(std::vector<std::string> *list, int i);
 };
 
 class OpenServerCommand : public Command {
