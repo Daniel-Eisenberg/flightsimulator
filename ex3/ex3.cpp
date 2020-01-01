@@ -8,7 +8,7 @@
 
 static unordered_map<string, Command*> command_map;
 
-vector<string> split(const string& s, char delimiter) {
+std::vector<std::string> ex3::split(const string& s, char delimiter) {
     vector<string> tokens;
     string token;
     istringstream tokenStream(s);
@@ -21,7 +21,7 @@ vector<string> split(const string& s, char delimiter) {
     return tokens;
 }
 
-std::vector<std::string> split(std::string str,std::string delimiter){
+std::vector<std::string> ex3::split(std::string str, std::string delimiter){
 
     std::vector<std::string> arr;
     size_t pos = 0;
@@ -63,8 +63,8 @@ void removeTabs(char *str) {
 }
 
 string removeclosing(string str) {
-    vector<string> s = split(str, '(');
-    vector<string> temp = split(s.at(1), ')');
+    vector<string> s = ex3::split(str, '(');
+    vector<string> temp = ex3::split(s.at(1), ')');
     return temp.at(0);
 }
 

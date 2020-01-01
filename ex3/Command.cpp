@@ -18,7 +18,7 @@ using namespace std;
 
 //static std::map<std::string, Variable*> variables_map;
 std::mutex mServer;
-static bool flag = true;
+bool flag = true;
 
 
 int parseMathExp(std::vector<std::string> *list, int i, int scope) {

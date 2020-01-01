@@ -6,6 +6,7 @@
 #include "Client_Side.h"
 #include <vector>
 #include "DatabaseManager.h"
+#include "Command.h"
 #include <queue>
 //hi
 std::string Message_to_server(std::vector<std::string> &values) {
@@ -55,6 +56,8 @@ std::string Message_to_server(std::vector<std::string> &values) {
                 char buffer[1024] = {0};
                 int valread = read(client_socket, buffer, 1024);
                 std::cout << buffer << std::endl;
+                if (flag)
+                    flag = false;
                 close(client_socket);
             }
         }

@@ -4,11 +4,10 @@
 
 #ifndef EX3_COMMAND_H
 #define EX3_COMMAND_H
-
 #include <list>
 #include <map>
 #include "Variable.h"
-
+extern bool flag;
 class Command {
 public:
     int virtual execute(std::vector<std::string> *list, int index, int scope);
