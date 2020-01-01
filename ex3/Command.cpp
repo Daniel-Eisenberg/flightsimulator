@@ -112,7 +112,7 @@ int OpenServerCommand::execute(std::vector<std::string> *list, int i, int scope)
 
 int ConnectCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     Client_Side *client = new Client_Side();
-    int ip = stoi(list->at(i + 1));
+    string ip = list->at(i + 1);
     int port = stoi(list->at(i + 2));
     std::thread connectionThread(&Client_Side::create, client, ip, port);
     return args;
