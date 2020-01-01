@@ -7,6 +7,7 @@
 #include <vector>
 #include "DatabaseManager.h"
 #include <queue>
+//hi
 std::string Message_to_server(std::vector<std::string> &values) {
     std::string message;
     for (const std::string &i : values) {
