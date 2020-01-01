@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include "ex3.h"
+#include "DatabaseManager.h"
 extern bool flag;
 
 std::vector<std::string> split(std::string str,std::string delimiter){
@@ -85,7 +86,11 @@ int Tcp_Server::create_socket(int port) {
             }
             char* line = getline(client_socket);
             vector<string> values = split(line, " ");
-            //add the values to the map
+            vector<double> double_values;
+            for (string x : values) {
+                double_values.push_back(stod(x));
+            }
+            DatabaseManager::get().updateDataFromSim(double_values);
             sleep(5);
             if (flag)
                 flag = false;
