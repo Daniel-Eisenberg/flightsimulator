@@ -210,7 +210,7 @@ void setMap() {
 
 void ex3::parser(vector<string> *params, unsigned index, bool isScoped, int scope) {
     setMap();
-    int stopScope = index + Command::findSign(params, index, "}") - 2;
+    int stopScope = index + Command::findClosingBracket(params, index) - 2;
 
 
     while (index < params -> size()) {

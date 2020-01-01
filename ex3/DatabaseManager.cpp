@@ -17,7 +17,7 @@ DatabaseManager::DatabaseManager() {
 }
 
 void DatabaseManager::initSimVariablesMap() {
-    *simArray = {
+    std::vector<std::string> simArrayLocal = {
              "/instrumentation/airspeed-indicator/indicated-speed-kt",
              "/sim/time/warp",
              "/controls/switches/magnetos",
@@ -55,6 +55,8 @@ void DatabaseManager::initSimVariablesMap() {
              "/controls/switches/master-alt",
              "/engines/engine/rpm"
     };
+
+    simArray = &simArrayLocal;
 
     for (string sim : *simArray) {
         (*simVariablesMap)[sim] = 0;

@@ -53,16 +53,15 @@ int Command::findSign(std::vector<std::string> *list, int i, const string& sign)
 }
 
 // Finds the next occurrence of a string in the array
-int Command::findStopSignFunction(std::vector<std::string> *list, int i) {
+int Command::findClosingBracket(std::vector<std::string> *list, int i) {
     int args = 1; int innerParenthesis = 1;
     int openParen = findSign(list, i, "{");
     i = i + openParen + 1;
-    while (list->at(i) != "}" && innerParenthesis != 0) {
-        if (list->at(i) == "{") {
+    while (innerParenthesis > 0) {
+        if (list->at(i) == "{")
             innerParenthesis++;
-        }
-        if (list->at(i) == "}" && --innerParenthesis == 0)
-            break;
+        if (list->at(i) == "}")
+            innerParenthesis--;
         i++;
         args++;
     }
@@ -164,29 +163,29 @@ int SetVarCommand::execute(std::vector<std::string> *list, int i, int scope)  {
 }
 
 int WhileLoopCommand::execute(std::vector<std::string> *list, int i, int scope)  {
-    args = 1 + findSign(list, i + 1, "}");
-    int cmd = findSign(list, i + 1, "{");
+    int openParen = findSign(list, i, "{");
+    args = 1 + findClosingBracket(list, i + openParen + 1);
     int logicalExpIndex = i + 1;
     while(evaluateLogicalExp(list, logicalExpIndex, scope) && list->at(i) != "}") {
-        ex3::parser(list, i + cmd, true, scope + 1);
+        ex3::parser(list, i + openParen, true, scope + 1);
     }
     return args;
 }
 
 int IfCommand::execute(std::vector<std::string> *list, int i, int scope)  {
-    args = 1 + findSign(list, i + 1, "}");
-    int cmd = findSign(list, i + 1, "{");
+    int openParen = findSign(list, i, "{");
+    args = 1 + findClosingBracket(list, i + openParen + 1);
     int logicalExpIndex = i + 1;
     if(evaluateLogicalExp(list, logicalExpIndex, scope)) {
-        ex3::parser(list, i + cmd, true, scope + 1);
+        ex3::parser(list, i + openParen, true, scope + 1);
     }
     return args;
 }
 
 int FunctionCommand::execute(std::vector<std::string> *list, int i, int scope)  {
-    args = 1 + findStopSignFunction(list, i + 1);
-    int cmd = findSign(list, i + 1, "{");
-    ex3::parser(list, i + cmd, true, scope + 1);
+    int openParen = findSign(list, i, "{");
+    args = 1 + findClosingBracket(list, i + openParen + 1);
+    ex3::parser(list, i + openParen, true, scope + 1);
     return args;
 }
 
