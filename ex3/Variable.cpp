@@ -3,13 +3,13 @@
 //
 
 #include "Variable.h"
+#include "DatabaseManager.h"
 
 Variable::Variable(std::string sim, bool shouldUpdateSim, int scope) {
     this->sim = sim;
     this->shouldUpdateSim = shouldUpdateSim;
     if (sim != "")
         this->value = getValueFromServer(sim);
-    this->valueInit = true;
     this->scope = scope;
 }
 
@@ -17,19 +17,19 @@ void Variable::setValue(double value) {
     this->value = value;
     if (this->shouldUpdateSim && sim != "")
         updateValueToServer(value, this->sim);
-    this->valueInit = true;
 }
 
 double Variable::getValue(int scope) {
-    if (valueInit)
-        return value;
+    this->value = getValueFromServer(sim);
+
     if (this->scope != scope)
         throw "Variable is out of scope!";
-    else
-        throw "Uninitilization error!";
+
+    return value;
 }
 
 double Variable::getValueFromServer(std::string sim) {
+    DatabaseManager databaseManager = DatabaseManager.get();
     return 0;
 }
 
