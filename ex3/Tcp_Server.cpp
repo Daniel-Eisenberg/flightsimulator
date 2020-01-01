@@ -67,7 +67,7 @@ int Tcp_Server::create_socket(int port) {
 
 
         // bind
-        if (bind(socket1, (struct sockaddr *) &address, sizeof(address)) == -1) {
+        if (::bind(socket1, (struct sockaddr *) &address, sizeof(address)) == -1) {
             std::cerr << "could not bind the socket to an ip" << std::endl;
             return -2;
         }

@@ -29,7 +29,7 @@ double Variable::getValue(int scope) {
 }
 
 double Variable::getValueFromServer(std::string sim) {
-    DatabaseManager databaseManager = DatabaseManager.get();
+    DatabaseManager databaseManager = DatabaseManager::get();
     return 0;
 }
 
