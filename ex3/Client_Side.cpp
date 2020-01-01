@@ -40,7 +40,7 @@ std::string Message_to_server(std::vector<std::string> &values) {
             std:: cout <<"client connect to server" << std::endl;
         }
         while (true) {
-            std::queue<std::string> queue = DatabaseManager::get().getSimCommandsQ();
+            std::queue<std::string> queue = *DatabaseManager::get().getSimCommandsQ();
             std::string s;
             for (int i = 0; i < queue.size(); i++) {
                 const char* message = queue.back().c_str();
