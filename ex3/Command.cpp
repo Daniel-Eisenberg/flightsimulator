@@ -13,7 +13,7 @@
 
 using namespace std;
 // Local static class methods
-// ---------------------------
+// ----------------------------
 
 static std::map<std::string, Variable*> variables_map;
 std::mutex mServer;
