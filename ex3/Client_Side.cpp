@@ -4,11 +4,24 @@
 
 #include <arpa/inet.h>
 #include "Client_Side.h"
+#include <vector>
+#include "DatabaseManager.h"
+#include "Command.h"
+#include <queue>
+//hi
+std::string Message_to_server(std::vector<std::string> &values) {
+    std::string message;
+    for (const std::string &i : values) {
+        message = i + ", ";
+    }
+    message += '\0';
+    return message;
+}
 
 
  int Client_Side::create(const char* ip, const char* port) {
 
-    char message[] = "message";
+
     while (true) {
         int client_socket = socket(AF_INET, SOCK_STREAM, 0);
         if (client_socket == -1) {
@@ -28,17 +41,25 @@
             std:: cout <<"client connect to server" << std::endl;
         }
         while (true) {
-
-            int sent = send(client_socket, message, strlen(message), 0);
-            if (sent == -1) {
-                std:: cout << "error sending message" << std::endl;
-            } else {
-                std::cout  << "message sent" << std:: endl;
+            std::queue<std::string> queue = *DatabaseManager::get().getSimCommandsQ();
+            std::string s;
+            for (int i = 0; i < queue.size(); i++) {
+                const char* message = queue.back().c_str();
+                int sent = send(client_socket, message, strlen(message), 0);
+                if (sent == -1) {
+                    std:: cerr << "error sending message" << std::endl;
+                    return -3;
+                } else {
+                    std::cout  << "message sent" << std:: endl;
+                    queue.pop();
+                }
+                char buffer[1024] = {0};
+                int valread = read(client_socket, buffer, 1024);
+                std::cout << buffer << std::endl;
+                if (flag)
+                    flag = false;
+                close(client_socket);
             }
-            char buffer[1024] = {0};
-            int valread = read(client_socket, buffer, 1024);
-            std::cout << buffer << std::endl;
-            close(client_socket);
         }
     }
 }

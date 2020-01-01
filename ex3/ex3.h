@@ -21,7 +21,9 @@ using namespace std;
 class ex3 {
 public:
     OpenServerCommand c;
-    static vector<string> lexerCode(std::string filename);
+    static vector<string> split(const string& s, char delimiter);
+    static std::vector<std::string> split(std::string str,std::string delimiter);
+        static vector<string> lexerCode(std::string filename);
     static void parser(vector<string> *params, unsigned index, bool isScoped, int scope);
 };
 
