@@ -38,7 +38,7 @@ int parseMathExp(std::vector<std::string> *list, int i, int scope) {
     return value;
 }
 
-// Finds the next occurrence of a string in the array
+// Finds the next occurrence of a string in the array.
 int Command::findSign(std::vector<std::string> *list, int i, const string& sign) {
     int args = 1;
     while (list->at(i) != sign) {
