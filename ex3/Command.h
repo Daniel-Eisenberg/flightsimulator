@@ -8,6 +8,10 @@
 #include <map>
 #include "Variable.h"
 extern bool flag;
+extern bool thread2;
+extern bool thread3;
+extern bool signal1;
+extern bool signal2;
 class Command {
 public:
     int virtual execute(std::vector<std::string> *list, int index, int scope);

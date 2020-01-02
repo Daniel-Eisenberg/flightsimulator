@@ -63,25 +63,49 @@ int Tcp_Server::create_socket(int port) {
             std::cerr << "Error during listening" << std::endl;
             return -3;
         }
-        while (true) {
-            //accept client
-            int client_socket = accept(socket1, (struct sockaddr *) &address, (socklen_t *) &address);
+
+        //accept client
+        int client_socket = accept(socket1, (struct sockaddr *) &address, (socklen_t *) &address);
+
+
+
+        while (thread2) {
+
             if (client_socket == -1) {
                 std::cerr << "Error accepting client" << std::endl;
                 return -4;
             }
-            char* line = getline(client_socket);
-            vector<string> values = ex3::split(line, ",");
+
+            char message[] = {0};
+            read(client_socket, message, 1024);
+
+            //char* line = getline(client_socket);
+            //vector<string> values = ex3::split(line, ",");
+            //vector<double> double_values;
+//            for (string x : values) {
+//                double_values.push_back(stod(x));
+//            }
+            int i;
+            string s;
+            for (i = 0; i < 1024; i++) {
+                if (message[i] == '\0')
+                    break;
+                s += message[i];
+            }
+            vector<string> values = ex3::split(s, ",");
             vector<double> double_values;
             for (string x : values) {
-                double_values.push_back(stod(x));
+                if(x != "")
+                    double_values.push_back(stod(x));
             }
+
             if (double_values.size() == 36)
                 DatabaseManager::get().updateDataFromSim(double_values);
-            sleep(5);
             if (flag)
                 flag = false;
         }
+        close(socket1);
+        signal1 = false;
 
 
 }

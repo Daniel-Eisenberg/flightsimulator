@@ -19,6 +19,10 @@ using namespace std;
 //static std::map<std::string, Variable*> variables_map;
 std::mutex mServer;
 bool flag = true;
+extern bool thread2 = true;
+extern bool thread3 = true;
+extern bool signal1 = true;
+extern bool signal2 = true;
 
 
 int parseMathExp(std::vector<std::string> *list, int i, int scope) {
@@ -104,19 +108,18 @@ int Command::execute(std::vector<std::string> *list, int i, int scope) {
 }
 
 int OpenServerCommand::execute(std::vector<std::string> *list, int i, int scope) {
-    Tcp_Server *server = new Tcp_Server();
     int port = stoi(list->at(i + 1));
     std::thread serverThread(&Tcp_Server::create_socket, port);
     while(flag){}
-    delete server;
+    serverThread.detach();
     return args;
 }
 
 int ConnectCommand::execute(std::vector<std::string> *list, int i, int scope)  {
-    Client_Side *client = new Client_Side();
     const char* ip = list->at(i + 1).c_str();
     const char* port = list->at(i + 2).c_str();
     std::thread connectionThread(&Client_Side::create, ip, port);
+    connectionThread.detach();
     return args;
 }
 
@@ -200,6 +203,6 @@ int PrintCommand::execute(std::vector<std::string> *list, int i, int scope)  {
 
 int SleepCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     string data = list->at(i + 1);
-    sleep(stod(data));
+    sleep(5);
     return args;
 }

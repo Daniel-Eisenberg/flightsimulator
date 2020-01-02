@@ -18,6 +18,9 @@ int main(int argc, char *argv[]) {
     }
 
     ex3::parser(&a, 0, false, 0);
+    thread2 = false;
+    thread3 = false;
+    while(signal1 || signal2){}
 
     return 0;
 }
