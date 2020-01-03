@@ -118,7 +118,9 @@ int OpenServerCommand::execute(std::vector<std::string> *list, int i, int scope)
 int ConnectCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     const char* ip = list->at(i + 1).c_str();
     const char* port = list->at(i + 2).c_str();
+    flag = true;
     std::thread connectionThread(&Client_Side::create, ip, port);
+    while(flag){}
     connectionThread.detach();
     return args;
 }

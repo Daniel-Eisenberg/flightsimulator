@@ -4,7 +4,7 @@ int main(int argc, char *argv[]) {
 
 
     std::string filename = argv[argc - 1];
-    filename = "fly.txt";
+    //filename = "fly.txt";
     vector<string> a;
     try {
         a = ex3::lexerCode(filename);
