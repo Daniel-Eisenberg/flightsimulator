@@ -171,6 +171,9 @@ vector<string> ex3::lexerCode(std::string filename) {
             params.push_back(temp.at(1));
             params.push_back("$");
         }  else if (line.rfind("Print", 0) == 0) {
+            while (debug_line.rfind(" ", 0) == 0) {
+                debug_line.erase(0, 1);
+            }
             vector<string> param = split(debug_line, '(');
             params.push_back(param.at(0));
             params.push_back(split(param.at(1), ')').at(0));
@@ -180,6 +183,18 @@ vector<string> ex3::lexerCode(std::string filename) {
             params.push_back(split(param.at(1), ')').at(0));
         } else if (line.rfind("}", 0) == 0) {
             params.push_back("}");
+        } else if (line.find('{') != string::npos) {
+            vector<string> param = split(line, '(');
+            params.push_back(param.at(0));
+            param = split(param.at(1), ')');
+            if (param.at(0).rfind("var", 0) == 0) {
+                param = split(param.at(0), "var");
+                for (string x : param) {
+                    params.push_back("var");
+                    params.push_back(x);
+                }
+            }
+            params.push_back("{");
         }
     }
     file.close();
