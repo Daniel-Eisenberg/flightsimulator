@@ -18,7 +18,14 @@ std::vector<std::string> ex3::split(const string& s, char delimiter) {
     {
         tokens.push_back(token);
     }
-    return tokens;
+    return tokens;//
+}
+
+void Erase_paren(string &s) {
+    size_t pos = 0;
+    while ((pos = s.find('\"')) != std::string::npos) {
+        s.erase(pos, 0);
+    }
 }
 
 std::vector<std::string> ex3::split(std::string str, std::string delimiter){
@@ -111,6 +118,7 @@ vector<string> ex3::lexerCode(std::string filename) {
             temp = split(line, '(');
             params.push_back(temp.at(0));
             temp = split(temp.at(1), ',');
+            Erase_paren(temp.at(0));
             params.push_back(temp.at(0));
             temp = split(temp.at(1), ')');
             params.push_back(temp.at(0));
@@ -129,13 +137,13 @@ vector<string> ex3::lexerCode(std::string filename) {
                 params.push_back("sim");
                 unsigned long start_pos = line.find('(');
                 unsigned long end_pos = line.find(')');
-                params.push_back(line.substr(start_pos + 1, end_pos - start_pos - 1));
+                params.push_back(line.substr(start_pos + 2, end_pos - start_pos - 2));
             } else if (line.find("<-") != std::string::npos) {
                 params.push_back("<-");
                 params.push_back("sim");
                 unsigned long start_pos = line.find('(');
                 unsigned long end_pos = line.find(')');
-                params.push_back(line.substr(start_pos + 1, end_pos  - start_pos - 1));
+                params.push_back(line.substr(start_pos + 2, end_pos  - start_pos - 2));
             } else {
                 params.push_back("=");
                 vector<string> temp = split(line, '=');
