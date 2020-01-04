@@ -7,8 +7,6 @@
 
 
 #include <string>
-#include "DatabaseManager.h"
-
 
 class Variable {
     double value = 0;
@@ -19,10 +17,9 @@ class Variable {
     void updateValueToServer(double value, std::string sim);
 public:
     Variable(std::string sim, bool shouldUpdateSim, int scope);
-    double getValue(int scope);
+    double getValue();
     int getScope();
     void setValue(double value);
-    static Variable* NOT_FOUND_VAR;
 };
 
 

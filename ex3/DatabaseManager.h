@@ -11,12 +11,16 @@
 #include <map>
 #include "Variable.h"
 
+/**
+ * A singleton object that will hold all the maps and data shared by all the other objects.
+ */
 class DatabaseManager {
     DatabaseManager();
     std::queue<std::string> *simCommandsQ;
     std::map<std::string, Variable*> *variablesMap;
     std::map<std::string, double> *simVariablesMap;
     static DatabaseManager *instance;
+    // Initiate the array of the XML values with the simulator variable values.
     std::vector<std::string> simArray  = {
             "/instrumentation/airspeed-indicator/indicated-speed-kt",
             "/sim/time/warp",
@@ -62,8 +66,8 @@ public:
     void updateDataFromSim(std::vector<double> dataFromSim);
     void addToSimCommandsQ(std::string command);
     void putToVariablesMap(std::string varName, Variable* variable);
-    Variable getFromVariablesMap(std::string varName, int scope);
-    bool isVariableExist(std::string varName, int scope);
+    Variable getFromVariablesMap(std::string varName, int scope) throw();
+    bool isVariableExist(std::string varName);
     double getFromSimVariablesMap(std::string varName);
     void initSimVariablesMap();
     void clearVariablesScope(int scope);

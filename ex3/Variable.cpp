@@ -3,8 +3,7 @@
 //
 
 #include "Variable.h"
-
-Variable* Variable::NOT_FOUND_VAR = NULL;
+#include "DatabaseManager.h"
 
 /**
  * Construct new variable, if we got sim value try to get it from the server.
@@ -37,12 +36,9 @@ void Variable::setValue(double value) {
  * @param scope the scope the parser is running to check if this is an allowed query
  * @return the value if exists
  */
-double Variable::getValue(int scope) {
+double Variable::getValue() {
     if (sim != "")
         this->value = getValueFromServer(sim);
-
-    if (scope < this->scope)
-        throw "Variable is out of scope!";
 
     return value;
 }

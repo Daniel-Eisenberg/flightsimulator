@@ -38,7 +38,11 @@ double parseMathExp(std::vector<std::string> *list, int i, int scope) {
         i++;
     while (list->at(i) != "$") {
         if (isalpha(list->at(i)[0]))
-            mathExp += to_string(DatabaseManager::get().getFromVariablesMap(list->at(i)).getValue(scope));
+            try {
+                mathExp += to_string(DatabaseManager::get().getFromVariablesMap(list->at(i), scope).getValue());
+            } catch (char *e) {
+                cout << "Error parsing variable to math expression: " << e;
+            }
         else
             mathExp += list->at(i);
         i++;
@@ -211,11 +215,11 @@ int SetVarCommand::execute(std::vector<std::string> *list, int i, int scope)  {
 
     if (list->at(i + 3) == "$") { // Calculate and set a math expression
         int value = parseMathExp(list, i + 4, scope);
-        Variable var = DatabaseManager::get().getFromVariablesMap(varName, scope)
-        if (!(var != Variable::NOT_FOUND_VAR))
-            cout << "Error: trying to set not found / out of scope variable.";
-        else
-            var.setValue(value);
+        try {
+            DatabaseManager::get().getFromVariablesMap(varName, scope).setValue(value);
+        } catch (char *e) {
+            cout << "Error setting variable: " << e;
+        }
         args = 2 + findSign(list, i + 4, "$");
     } else
         cout << "Error: no math expression $ after = tag.";
@@ -289,7 +293,11 @@ int FunctionCommand::execute(std::vector<std::string> *list, int i, int scope)  
 int PrintCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     string data = list->at(i + 1);
     if (DatabaseManager::get().isVariableExist(data, scope) && data[0] != '\"')
-        cout << DatabaseManager::get().getFromVariablesMap(data).getValue(scope) << endl;
+        try {
+            cout << DatabaseManager::get().getFromVariablesMap(data, scope).getValue() << endl;
+        } catch (char *e) {
+            cout << "Error printing variable: " << e;
+        }
     else
         cout << data << endl;
     return args;

@@ -7,6 +7,7 @@
 #include <list>
 #include <map>
 #include "Variable.h"
+
 extern bool flag;
 extern bool thread2;
 extern bool thread3;

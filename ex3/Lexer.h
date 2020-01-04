@@ -7,8 +7,6 @@
 
 
 #include <string>
-#include "Tcp_Server.h"
-#include "Client_Side.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -17,6 +15,8 @@
 #include "Command.h"
 #include "Parser.h"
 #include "DatabaseManager.h"
+#include "Tcp_Server.h"
+#include "Client_Side.h"
 
 using namespace std;
 

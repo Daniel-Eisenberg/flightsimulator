@@ -1,4 +1,7 @@
+#include "Variable.h"
 #include "Lexer.h"
+#include "Parser.h"
+#include "Command.h"
 
 int main(int argc, char *argv[]) {
 

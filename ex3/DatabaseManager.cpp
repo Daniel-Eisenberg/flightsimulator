@@ -76,10 +76,12 @@ void DatabaseManager::putToVariablesMap(std::string varName, Variable *variable)
  * @param varName
  * @return the variable of the current name, if out of scope / non exists return the NOT_FOUND object
  */
-Variable DatabaseManager::getFromVariablesMap(std::string varName, int scope) {
-    if (isVariableExist(varName, scope))
-        return *(*variablesMap)[varName];
-    return *Variable::NOT_FOUND_VAR;
+Variable DatabaseManager::getFromVariablesMap(std::string varName, int scope) throw() {
+    if (!isVariableExist(varName))
+        throw "Variable " + varName +  " does not exists!";
+    else if (scope >= (*variablesMap)[varName]->getScope())
+        throw "Variable " + varName +  " is out of scope!";
+    return *(*variablesMap)[varName];
 }
 
 /**
@@ -87,12 +89,8 @@ Variable DatabaseManager::getFromVariablesMap(std::string varName, int scope) {
  * @param varName
  * @return
  */
-bool DatabaseManager::isVariableExist(std::string varName, int scope) {
-    bool isExists = variablesMap->count(varName) > 0;
-    bool isInScope;
-    if (isExists)
-        isInScope = scope >= (*variablesMap)[varName]->getScope();
-    return isExists && isInScope;
+bool DatabaseManager::isVariableExist(std::string varName) {
+    return variablesMap->count(varName) > 0;
 }
 
 /**

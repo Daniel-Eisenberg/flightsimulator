@@ -2,10 +2,11 @@
 // Created by Daniel Eisenberg on 20/12/2019.
 //
 
-#include "Tcp_Server.h"
-#include "Command.h"
 #include <string>
 #include <vector>
+#include "Variable.h"
+#include "Tcp_Server.h"
+#include "Command.h"
 #include "Lexer.h"
 #include "DatabaseManager.h"
 
