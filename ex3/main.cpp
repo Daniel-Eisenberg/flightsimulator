@@ -29,6 +29,8 @@ int main(int argc, char *argv[]) {
     Command::cv.wait(ul, [] {return !Command::getKillClientThread();});
     Command::cv.wait(ul, [] {return !Command::getKillServerThread();});
 
+    Parser::clearMap();
+    delete &DatabaseManager::get();
 
     return 0;
 }

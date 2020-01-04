@@ -148,8 +148,10 @@ double DatabaseManager::getFromSimVariablesMap(std::string varName) {
  */
 void DatabaseManager::clearVariablesScope(int scope) {
     for (auto&& [key, value] : *variablesMap) {
-        if (value->getScope() >= scope)
+        if (value->getScope() >= scope) {
+            delete value;
             (*variablesMap).erase(key);
+        }
     }
 }
 
@@ -175,6 +177,14 @@ DatabaseManager& DatabaseManager::get() {
 }
 
 DatabaseManager::~DatabaseManager() {
+    for (auto&& [key, value] : *variablesMap) {
+        delete value;
+    }
+
+    for (auto&& [key, value] : *functionMap) {
+        delete value;
+    }
+
     delete simCommandsQ;
     delete variablesMap;
     delete simVariablesMap;

@@ -20,6 +20,7 @@ public:
     double getValue();
     int getScope();
     void setValue(double value);
+    ~Variable();
 };
 
 
