@@ -12,10 +12,10 @@
 #include <iostream>
 #include <thread>
 
+
 using namespace std;
 // Local static class methods
 // ----------------------------
-
 bool flag = true;
 extern bool thread2 = true;
 extern bool thread3 = true;
@@ -37,14 +37,15 @@ double parseMathExp(std::vector<std::string> *list, int i, int scope) {
     if (list->at(i) == "$") // if by mistake we got the first $
         i++;
     while (list->at(i) != "$") {
-        if (isalpha(list->at(i)[0]))
+        string data = list->at(i);
+        if (isalpha(data[0]) && DatabaseManager::get().isVariableExist(data))
             try {
                 mathExp += to_string(DatabaseManager::get().getFromVariablesMap(list->at(i), scope)->getValue());
             } catch (char *e) {
                 cout << "Error parsing variable to math expression: " << e;
             }
         else
-            mathExp += list->at(i);
+            mathExp += data;
         i++;
     }
     Interpreter* inter = new Interpreter();
@@ -135,9 +136,6 @@ bool static evaluateLogicalExp(std::vector<std::string> *list, int i, int scope)
 // Subclasses methods
 // ---------------------------
 
-int Command::execute(std::vector<std::string> *list, int i, int scope) {
-}
-
 /**
  * Initiate the server connection
  * @param list of parameters
@@ -217,7 +215,7 @@ int SetVarCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     string varName = list->at(i + 1);
 
     if (list->at(i + 3) == "$") { // Calculate and set a math expression
-        int value = parseMathExp(list, i + 4, scope);
+        double value = parseMathExp(list, i + 4, scope);
         try {
             DatabaseManager::get().getFromVariablesMap(varName, scope)->setValue(value);
         } catch (char *e) {
@@ -392,6 +390,7 @@ int PrintCommand::execute(std::vector<std::string> *list, int i, int scope)  {
  */
 int SleepCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     string data = list->at(i + 1);
-    sleep(stod(data));
+//    sleep(stoi(data));
+    sleep(1);
     return args;
 }

@@ -9,6 +9,7 @@
 #include "Interpreter.h"
 #include "MathParser.h"
 #include "Token.h"
+#include "DatabaseManager.h"
 #include <sstream>
 
 /**
@@ -96,10 +97,10 @@ queue<Token> Interpreter::shuntingYard(string arg) {
             shunting_yard.push(*token);
             expecting_op = true;
         } else if (isalpha(arg[i])) {
-            if (expecting_op)
-                throw "Excpecting (, ), -, +, *, /";
+//            if (expecting_op)
+//                throw "Excpecting (, ), -, +, *, /";
             val = arg[i];
-            if (isdigit(arg[i + 1])) {
+            while (i < arg.length() && (isdigit(arg[i + 1]) || isalpha(arg[i + 1]) || arg[i + 1] == '.')) {
                 val += arg[++i];
             }
             token = new Token(val);
@@ -169,7 +170,14 @@ Expression* Interpreter::reversePolishNotation(queue<Token> shunting_yard) {
             expressions.push(new Value(stod(shunting_yard.front().getValue())));
             shunting_yard.pop();
         } else if (shunting_yard.front().isVariable()) {
-            expressions.push(new Var(shunting_yard.front().getValue(), getVariable(shunting_yard.front().getValue())));
+            string varName = shunting_yard.front().getValue();
+            double varValue = 0;
+            if (isalpha(varName[0]) && DatabaseManager::get().isVariableExist(varName)) {
+                varValue = DatabaseManager::get().getFromVariablesMap(varName, 0)->getValue();
+            } else {
+                varValue = getVariable(varName);
+            }
+            expressions.push(new Var(varName, varValue));
             shunting_yard.pop();
         } else {
             e1 = expressions.top();

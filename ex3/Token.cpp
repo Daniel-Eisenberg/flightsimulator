@@ -6,6 +6,7 @@
 #include <stack>
 #include <string>
 #include "Token.h"
+#include "DatabaseManager.h"
 
 using namespace std;
 
