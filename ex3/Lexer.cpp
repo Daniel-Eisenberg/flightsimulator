@@ -2,13 +2,10 @@
 // Created by Daniel Eisenberg on 27/12/2019.
 //
 
-#include "ex3.h"
-#include "DatabaseManager.h"
+#include "Lexer.h"
 
 
-static unordered_map<string, Command*> command_map;
-
-std::vector<std::string> ex3::split(const string& s, char delimiter) {
+std::vector<std::string> Lexer::split(const string& s, char delimiter) {
     vector<string> tokens;
     string token;
     istringstream tokenStream(s);
@@ -18,17 +15,10 @@ std::vector<std::string> ex3::split(const string& s, char delimiter) {
     {
         tokens.push_back(token);
     }
-    return tokens;//
+    return tokens;
 }
 
-void Erase_paren(string &s) {
-    size_t pos = 0;
-    while ((pos = s.find('\"')) != std::string::npos) {
-        s.erase(pos, 0);
-    }
-}
-
-std::vector<std::string> ex3::split(std::string str, std::string delimiter){
+std::vector<std::string> Lexer::split(std::string str, std::string delimiter){
 
     std::vector<std::string> arr;
     size_t pos = 0;
@@ -41,6 +31,14 @@ std::vector<std::string> ex3::split(std::string str, std::string delimiter){
     }
     arr.push_back(str);
     return arr;
+}
+
+
+void eraseDoubleQuotes(string &s) {
+    size_t pos = 0;
+    while ((pos = s.find('\"')) != std::string::npos) {
+        s.erase(pos, 1);
+    }
 }
 
 void removeSpaces(char *str) {
@@ -69,13 +67,13 @@ void removeTabs(char *str) {
     str[count] = '\0';
 }
 
-string removeclosing(string str) {
-    vector<string> s = ex3::split(str, '(');
-    vector<string> temp = ex3::split(s.at(1), ')');
+string removeClosing(string str) {
+    vector<string> s = Lexer::split(str, '(');
+    vector<string> temp = Lexer::split(s.at(1), ')');
     return temp.at(0);
 }
 
-string find_operator(string str) {
+string findOperator(string str) {
     if (str.find("!=") != std::string::npos) {
         return "!=";
     } else if (str.find("==") != std::string::npos) {
@@ -92,7 +90,7 @@ string find_operator(string str) {
 }
 
 
-vector<string> ex3::lexerCode(std::string filename) {
+vector<string> Lexer::lexerCode(std::string filename) {
 
     vector<string> params;
     vector<string> temp;
@@ -118,7 +116,7 @@ vector<string> ex3::lexerCode(std::string filename) {
             temp = split(line, '(');
             params.push_back(temp.at(0));
             temp = split(temp.at(1), ',');
-            Erase_paren(temp.at(0));
+            eraseDoubleQuotes(temp.at(0));
             params.push_back(temp.at(0));
             temp = split(temp.at(1), ')');
             params.push_back(temp.at(0));
@@ -137,13 +135,13 @@ vector<string> ex3::lexerCode(std::string filename) {
                 params.push_back("sim");
                 unsigned long start_pos = line.find('(');
                 unsigned long end_pos = line.find(')');
-                params.push_back(line.substr(start_pos + 2, end_pos - start_pos - 2));
+                params.push_back(line.substr(start_pos + 2, end_pos - start_pos - 3));
             } else if (line.find("<-") != std::string::npos) {
                 params.push_back("<-");
                 params.push_back("sim");
                 unsigned long start_pos = line.find('(');
                 unsigned long end_pos = line.find(')');
-                params.push_back(line.substr(start_pos + 2, end_pos  - start_pos - 2));
+                params.push_back(line.substr(start_pos + 2, end_pos  - start_pos - 3));
             } else {
                 params.push_back("=");
                 vector<string> temp = split(line, '=');
@@ -159,7 +157,7 @@ vector<string> ex3::lexerCode(std::string filename) {
                 condition = "if";
             }
             params.push_back(condition);
-            string str = find_operator(line);
+            string str = findOperator(line);
             vector<string> param = split(line, condition);
             param = split(param.at(0), str);
             params.push_back("$");
@@ -209,46 +207,3 @@ vector<string> ex3::lexerCode(std::string filename) {
     return params;
 }
 
-void setMap() {
-
-    OpenServerCommand *c1 = new OpenServerCommand();
-    ConnectCommand *c2 = new ConnectCommand();
-    DefineVarCommand *c3 = new DefineVarCommand();
-    SetVarCommand *c4 = new SetVarCommand();
-    WhileLoopCommand *c5 = new WhileLoopCommand();
-    IfCommand *c6 = new IfCommand();
-    PrintCommand *c7 = new PrintCommand();
-    SleepCommand *c8 = new SleepCommand();
-    command_map.insert(
-            {{"openDataServer", c1},
-            {"connectControlClient", c2},
-            {"var", c3},
-            {"#", c4},
-            {"while", c5},
-            {"if", c6},
-            {"Print", c7},
-            {"Sleep", c8}}
-    );
-}
-
-void ex3::parser(vector<string> *params, unsigned index, bool isScoped, int scope) {
-    setMap();
-    int stopScope = index + Command::findClosingBracket(params, index) - 2;
-
-
-    while (index < params -> size()) {
-        if (!isScoped) {
-            string current_command = params -> at(index);
-            cout << "Command=" << current_command <<" Index=" << index << endl;
-            index += command_map.at(current_command)->execute(params, index, scope);
-            index++;
-        } else if (index < stopScope) {
-            string current_command = params->at(index);
-            cout << "Scoped- Command=" << current_command << " Index=" << index << endl;
-            index += command_map.at(current_command)->execute(params, index, scope);
-            index++;
-        } else
-            break;
-    }
-    DatabaseManager::get().clearVariablesScope(scope);
-}

@@ -7,7 +7,7 @@
 #include <stack>
 #include <string>
 #include "Interpreter.h"
-#include "ex1.h"
+#include "MathParser.h"
 #include "Token.h"
 #include <sstream>
 

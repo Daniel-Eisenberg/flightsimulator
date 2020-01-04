@@ -38,6 +38,7 @@ std::string Message_to_server(std::vector<std::string> &values) {
     } else {
         std:: cout <<"client connect to server" << std::endl;
     }
+    sleep(10);
     while (thread3) {
         std::queue<std::string> queue = *DatabaseManager::get().getSimCommandsQ();
         std::string s;

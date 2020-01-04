@@ -11,7 +11,6 @@
 #include <map>
 #include "Variable.h"
 
-
 class DatabaseManager {
     DatabaseManager();
     std::queue<std::string> *simCommandsQ;
@@ -63,8 +62,8 @@ public:
     void updateDataFromSim(std::vector<double> dataFromSim);
     void addToSimCommandsQ(std::string command);
     void putToVariablesMap(std::string varName, Variable* variable);
-    Variable getFromVariablesMap(std::string varName);
-    bool isVariableExist(std::string varName);
+    Variable getFromVariablesMap(std::string varName, int scope);
+    bool isVariableExist(std::string varName, int scope);
     double getFromSimVariablesMap(std::string varName);
     void initSimVariablesMap();
     void clearVariablesScope(int scope);

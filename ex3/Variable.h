@@ -7,10 +7,11 @@
 
 
 #include <string>
+#include "DatabaseManager.h"
+
 
 class Variable {
     double value = 0;
-    bool valueInit = false;
     std::string sim = "";
     bool shouldUpdateSim = false;
     int scope = 0;
@@ -21,6 +22,7 @@ public:
     double getValue(int scope);
     int getScope();
     void setValue(double value);
+    static Variable* NOT_FOUND_VAR;
 };
 
 

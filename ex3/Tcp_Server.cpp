@@ -6,7 +6,7 @@
 #include "Command.h"
 #include <string>
 #include <vector>
-#include "ex3.h"
+#include "Lexer.h"
 #include "DatabaseManager.h"
 
 
@@ -80,7 +80,7 @@ int Tcp_Server::create_socket(int port) {
             read(client_socket, message, 1024);
 
             //char* line = getline(client_socket);
-            //vector<string> values = ex3::split(line, ",");
+            //vector<string> values = Lexer::split(line, ",");
             //vector<double> double_values;
 //            for (string x : values) {
 //                double_values.push_back(stod(x));
@@ -92,7 +92,7 @@ int Tcp_Server::create_socket(int port) {
                     break;
                 s += message[i];
             }
-            vector<string> values = ex3::split(s, ",");
+            vector<string> values = Lexer::split(s, ",");
             vector<double> double_values;
             for (string x : values) {
                 if(x != "")
