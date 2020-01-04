@@ -19,6 +19,7 @@ using namespace std;
 
 class Parser {
 public:
+    static void clearMap();
     static void parser(vector<string> *params, unsigned index, bool isScoped, int scope);
 };
 

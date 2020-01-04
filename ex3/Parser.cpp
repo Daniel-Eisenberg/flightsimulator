@@ -8,7 +8,6 @@ using namespace std;
 
 static unordered_map<string, Command*> commandMap;
 
-
 void setMap() {
     OpenServerCommand *c1 = new OpenServerCommand();
     ConnectCommand *c2 = new ConnectCommand();
@@ -61,5 +60,11 @@ void Parser::parser(vector<string> *params, unsigned index, bool isScoped, int s
             index++;
         } else
             break;
+    }
+}
+
+void Parser::clearMap() {
+    for (auto&& [key, value] : commandMap) {
+        delete value;
     }
 }

@@ -68,3 +68,10 @@ void Variable::updateValueToServer(double value, std::string sim) {
 int Variable::getScope() {
     return this->scope;
 }
+
+/**
+ * No heap memory allocated
+ */
+Variable::~Variable() {
+
+}

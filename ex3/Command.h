@@ -31,6 +31,7 @@ public:
     static void killClientThread(int i);
     static bool getKillServerThread();
     static bool getKillClientThread();
+    virtual ~Command() {}; // No heap memory allocated
 };
 
 class OpenServerCommand : public Command {
@@ -77,6 +78,7 @@ public:
     int getBeginIndex();
     std::vector<std::string> getVarNamesVector();
     int virtual execute(std::vector<std::string> *list, int index, int scope);
+    virtual ~CreateFunctionCommand() {}; // No heap memory allocated
 };
 
 class RunFunctionCommand : public Command {
