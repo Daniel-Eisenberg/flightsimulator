@@ -23,8 +23,8 @@ Variable::Variable(std::string sim, bool shouldUpdateSim, int scope) {
  * Set to value to to member variable, if in -> mode then also update the simulator
  * @param value the value to set
  */
-void Variable::setValue(double value) {
-    this->value = value;
+void Variable::setValue(double val) {
+    this->value = val;
     if (this->shouldUpdateSim && sim != "")
         updateValueToServer(value, this->sim);
 }

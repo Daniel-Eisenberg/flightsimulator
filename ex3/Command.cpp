@@ -39,7 +39,7 @@ double parseMathExp(std::vector<std::string> *list, int i, int scope) {
     while (list->at(i) != "$") {
         if (isalpha(list->at(i)[0]))
             try {
-                mathExp += to_string(DatabaseManager::get().getFromVariablesMap(list->at(i), scope).getValue());
+                mathExp += to_string(DatabaseManager::get().getFromVariablesMap(list->at(i), scope)->getValue());
             } catch (char *e) {
                 cout << "Error parsing variable to math expression: " << e;
             }
@@ -66,6 +66,10 @@ int Command::findSign(std::vector<std::string> *list, int i, const string& sign)
     while (list->at(i) != sign) {
         i++;
         args++;
+        if (i == list->size()) {
+            cout << "Out of bound exception i=" << i;
+            break;
+        }
     }
     args++;
 
@@ -92,7 +96,6 @@ int Command::findClosingBracket(std::vector<std::string> *list, int i) {
         args++;
     }
     args++;
-
     return args;
 }
 
@@ -143,10 +146,10 @@ int Command::execute(std::vector<std::string> *list, int i, int scope) {
  * @return
  */
 int OpenServerCommand::execute(std::vector<std::string> *list, int i, int scope) {
-    int port = stoi(list->at(i + 1));
-    std::thread serverThread(&Tcp_Server::create_socket, port);
-    while(flag){}
-    serverThread.detach();
+//    int port = stoi(list->at(i + 1));
+//    std::thread serverThread(&Tcp_Server::create_socket, port);
+//    while(flag){}
+//    serverThread.detach();
     return args;
 }
 
@@ -158,12 +161,12 @@ int OpenServerCommand::execute(std::vector<std::string> *list, int i, int scope)
  * @return number of arguments that the parser should skip
  */
 int ConnectCommand::execute(std::vector<std::string> *list, int i, int scope)  {
-    const char* ip = list->at(i + 1).c_str();
-    const char* port = list->at(i + 2).c_str();
-    flag = true;
-    std::thread connectionThread(&Client_Side::create, ip, port);
-    while(flag){}
-    connectionThread.detach();
+//    const char* ip = list->at(i + 1).c_str();
+//    const char* port = list->at(i + 2).c_str();
+//    flag = true;
+//    std::thread connectionThread(&Client_Side::create, ip, port);
+//    while(flag){}
+//    connectionThread.detach();
     return args;
 }
 
@@ -216,7 +219,7 @@ int SetVarCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     if (list->at(i + 3) == "$") { // Calculate and set a math expression
         int value = parseMathExp(list, i + 4, scope);
         try {
-            DatabaseManager::get().getFromVariablesMap(varName, scope).setValue(value);
+            DatabaseManager::get().getFromVariablesMap(varName, scope)->setValue(value);
         } catch (char *e) {
             cout << "Error setting variable: " << e;
         }
@@ -238,13 +241,17 @@ int SetVarCommand::execute(std::vector<std::string> *list, int i, int scope)  {
  */
 int WhileLoopCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     int openParen = findSign(list, i, "{") - 2;
-    args = 1 + findClosingBracket(list, i + 1);
+    args = findClosingBracket(list, i + 1) - 1;
     int logicalExpIndex = i + 1;
     while(evaluateLogicalExp(list, logicalExpIndex, scope) && list->at(i) != "}") {
         // Call the parser in scoped mode
         Parser::parser(list, i + openParen + 1, true, scope + 1);
         sleep(1);
     }
+
+    // Clear the variables from the scope we are leaving so they won't interrupt new variables
+    DatabaseManager::get().clearVariablesScope(scope + 1);
+
     return args;
 }
 
@@ -259,26 +266,99 @@ int WhileLoopCommand::execute(std::vector<std::string> *list, int i, int scope) 
  */
 int IfCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     int openParen = findSign(list, i, "{") - 2;
-    args = 1 + findClosingBracket(list, i + openParen + 1);
+    args = findClosingBracket(list, i + 1) - 1;
     int logicalExpIndex = i + 1;
     if(evaluateLogicalExp(list, logicalExpIndex, scope)) {
-        Parser::parser(list, i + openParen, true, scope + 1);
+        Parser::parser(list, i + openParen + 1, true, scope + 1);
     }
+
+    // Clear the variables from the scope we are leaving so they won't interrupt new variables
+    DatabaseManager::get().clearVariablesScope(scope + 1);
+
     return args;
 }
 
 /**
  * Create a function with the relevant variables for future use
  * Add the function the function command map
+ * Add the variable names to a vector that will help initialize the argument variables
+ * Save the start of the function code to help run the code
  * @param list of parameters
  * @param i index of current location
  * @param scope the scope we are running in
  * @return number of arguments that the parser should skip
  */
-int FunctionCommand::execute(std::vector<std::string> *list, int i, int scope)  {
+int CreateFunctionCommand::execute(std::vector<std::string> *list, int i, int scope)  {
+    string funcName = list->at(i + 1);
     int openParen = findSign(list, i, "{") - 2;
-    args = 1 + findClosingBracket(list, i + openParen + 1);
-    Parser::parser(list, i + openParen, true, scope + 1);
+    methodBeginIndex = i + openParen + 1;
+    args = findClosingBracket(list, i + 1) - 1;
+
+    i += 2;
+    while (list->at(i) != "{") { // For functions with variables
+        if (list->at(i) != "var")
+            varNames.push_back(list->at(i));
+        i++;
+    }
+
+    // Add the function to the function command map
+    DatabaseManager::get().putToFunctionMap(funcName, this);
+    return args;
+}
+
+// Marks the begining of the function code for the parser when running
+int CreateFunctionCommand::getBeginIndex() {
+    return methodBeginIndex;
+}
+
+// The argument vars that should be included in the function
+std::vector<std::string> CreateFunctionCommand::getVarNamesVector() {
+    return varNames;
+}
+
+/**
+ * Load the function from the function command map by name
+ * Get the variable to
+ * @param list of parameters
+ * @param i index of current location
+ * @param scope the scope we are running in
+ * @return number of arguments that the parser should skip
+ */
+int RunFunctionCommand::execute(std::vector<std::string> *list, int i, int scope)  {
+    string funcName = list->at(i + 1);
+    int openParen = findSign(list, i, "(") - 2;
+    int closeParen = findSign(list, i, ")") - 2;
+    args += closeParen;
+
+    // Get the function objects and its members
+    CreateFunctionCommand func = DatabaseManager::get().getFromFunctionMap(funcName);
+    int methodBeginIndex = func.getBeginIndex();
+    std::vector<std::string> varNames = func.getVarNamesVector();
+
+    if (closeParen - openParen - 1 != varNames.size()) {
+        cout << "Error running the function: " + funcName + ", missing arguments.";
+        return args;
+    }
+
+    if (varNames.size() > 0) {
+        i += openParen + 1;
+        for (string varName : varNames) {
+            double value = 0;
+            if (isalpha(list->at(i)[0]))
+                try {
+                    value = DatabaseManager::get().getFromVariablesMap(list->at(i), scope)->getValue();
+                } catch (char *e) {
+                    cout << "Error loading a variable to function arguments: " << e;
+                }
+            else
+                value = stod(list->at(i));
+            Variable* var = new Variable("", false, scope + 1);
+            var->setValue(value);
+            DatabaseManager::get().putToVariablesMap(varName, var);
+            i++;
+        }
+    }
+    Parser::parser(list, methodBeginIndex, true, scope + 1);
     return args;
 }
 
@@ -292,9 +372,9 @@ int FunctionCommand::execute(std::vector<std::string> *list, int i, int scope)  
  */
 int PrintCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     string data = list->at(i + 1);
-    if (DatabaseManager::get().isVariableExist(data, scope) && data[0] != '\"')
+    if (data[0] != '\"' && DatabaseManager::get().isVariableExist(data))
         try {
-            cout << DatabaseManager::get().getFromVariablesMap(data, scope).getValue() << endl;
+            cout << DatabaseManager::get().getFromVariablesMap(data, scope)->getValue() << endl;
         } catch (char *e) {
             cout << "Error printing variable: " << e;
         }
@@ -312,6 +392,6 @@ int PrintCommand::execute(std::vector<std::string> *list, int i, int scope)  {
  */
 int SleepCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     string data = list->at(i + 1);
-    sleep(5);
+    sleep(stod(data));
     return args;
 }

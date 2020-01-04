@@ -6,6 +6,7 @@
 #define EX3_COMMAND_H
 #include <list>
 #include <map>
+#include <vector>
 #include "Variable.h"
 
 extern bool flag;
@@ -56,7 +57,18 @@ public:
     int virtual execute(std::vector<std::string> *list, int index, int scope);
 };
 
-class FunctionCommand : public Command {
+class CreateFunctionCommand : public Command {
+    int args = 0;
+    int methodBeginIndex = 0;
+    std::vector<std::string> varNames = {};
+public:
+    static std::map<std::string, CreateFunctionCommand*> functionMap;
+    int getBeginIndex();
+    std::vector<std::string> getVarNamesVector();
+    int virtual execute(std::vector<std::string> *list, int index, int scope);
+};
+
+class RunFunctionCommand : public Command {
     int args = 0;
 public:
     int virtual execute(std::vector<std::string> *list, int index, int scope);

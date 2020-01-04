@@ -16,9 +16,9 @@ int main(int argc, char *argv[]) {
     }
 
 
-//    for (string &x : a) {
-//        cout << x << ", " << endl;
-//    }
+    for (string &x : a) {
+        cout << x << endl;
+    }
 
     Parser::parser(&a, 0, false, 0);
     thread2 = false;

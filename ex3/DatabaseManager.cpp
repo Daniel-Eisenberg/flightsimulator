@@ -19,6 +19,7 @@ DatabaseManager::DatabaseManager() {
     simCommandsQ = new queue<string>;
     variablesMap = new map<std::string, Variable*>;
     simVariablesMap = new map<std::string, double>;
+    functionMap = new map<std::string, CreateFunctionCommand*>;
     initSimVariablesMap();
 }
 
@@ -76,12 +77,12 @@ void DatabaseManager::putToVariablesMap(std::string varName, Variable *variable)
  * @param varName
  * @return the variable of the current name, if out of scope / non exists return the NOT_FOUND object
  */
-Variable DatabaseManager::getFromVariablesMap(std::string varName, int scope) throw() {
+Variable* DatabaseManager::getFromVariablesMap(std::string varName, int scope) throw() {
     if (!isVariableExist(varName))
         throw "Variable " + varName +  " does not exists!";
-    else if (scope >= (*variablesMap)[varName]->getScope())
+    else if (scope < (*variablesMap)[varName]->getScope())
         throw "Variable " + varName +  " is out of scope!";
-    return *(*variablesMap)[varName];
+    return (*variablesMap)[varName];
 }
 
 /**
@@ -101,14 +102,6 @@ double DatabaseManager::getFromSimVariablesMap(std::string varName) {
     return (*simVariablesMap)[varName];
 }
 
-/**
- * @return the singleton instace of the object *thread safe
- */
-DatabaseManager& DatabaseManager::get() {
-    if (!instance)
-        instance = new DatabaseManager();
-    return *instance;
-}
 
 /**
  * Clear the variables scope that we leave (at the end of a method / while / if command)
@@ -119,4 +112,25 @@ void DatabaseManager::clearVariablesScope(int scope) {
         if (value->getScope() >= scope)
             (*variablesMap).erase(key);
     }
+}
+
+void DatabaseManager::putToFunctionMap(std::string funcName, CreateFunctionCommand *functionCommand) {
+    (*functionMap)[funcName] = functionCommand;
+}
+
+CreateFunctionCommand DatabaseManager::getFromFunctionMap(std::string funcName) {
+    return *(*functionMap)[funcName];
+}
+
+bool DatabaseManager::isFunctionExist(std::string funcName) {
+    return functionMap->count(funcName) > 0;
+}
+
+/**
+ * @return the singleton instace of the object *thread safe
+ */
+DatabaseManager& DatabaseManager::get() {
+    if (!instance)
+        instance = new DatabaseManager();
+    return *instance;
 }

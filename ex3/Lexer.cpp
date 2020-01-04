@@ -92,6 +92,7 @@ string findOperator(string str) {
 
 vector<string> Lexer::lexerCode(std::string filename) {
 
+    unordered_map<string, bool> functions;
     vector<string> params;
     vector<string> temp;
     fstream file;
@@ -191,7 +192,9 @@ vector<string> Lexer::lexerCode(std::string filename) {
             params.push_back("}");
         } else if (line.find('{') != string::npos) {
             vector<string> param = split(line, '(');
+            params.push_back("creatFunc");
             params.push_back(param.at(0));
+            functions[param.at(0)] = true;
             param = split(param.at(1), ')');
             if (param.at(0).rfind("var", 0) == 0) {
                 param = split(param.at(0), "var");
@@ -201,6 +204,20 @@ vector<string> Lexer::lexerCode(std::string filename) {
                 }
             }
             params.push_back("{");
+        } else if (line.find('(') != string::npos) {
+            vector<string> param = split(line, '(');
+            if (functions.count(param.at(0)) > 0) {
+                params.push_back("runFunc");
+                params.push_back(param.at(0));
+                params.push_back("(");
+                param = split(param.at(1), ')');
+                param =  split(param.at(0), ',');
+                for (string x : param) {
+                    params.push_back(x);
+                }
+                params.push_back(")");
+            }
+
         }
     }
     file.close();

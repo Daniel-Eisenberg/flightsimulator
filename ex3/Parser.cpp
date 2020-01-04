@@ -6,7 +6,7 @@
 
 using namespace std;
 
-static unordered_map<string, Command*> command_map;
+static unordered_map<string, Command*> commandMap;
 
 
 void setMap() {
@@ -19,7 +19,9 @@ void setMap() {
     IfCommand *c6 = new IfCommand();
     PrintCommand *c7 = new PrintCommand();
     SleepCommand *c8 = new SleepCommand();
-    command_map.insert(
+    CreateFunctionCommand *c9 = new CreateFunctionCommand();
+    RunFunctionCommand *c10 = new RunFunctionCommand();
+    commandMap.insert(
             {{"openDataServer", c1},
              {"connectControlClient", c2},
              {"var", c3},
@@ -27,7 +29,9 @@ void setMap() {
              {"while", c5},
              {"if", c6},
              {"Print", c7},
-             {"Sleep", c8}}
+             {"Sleep", c8},
+             {"creatFunc", c9},
+             {"runFunc", c10}}
     );
 }
 
@@ -48,16 +52,14 @@ void Parser::parser(vector<string> *params, unsigned index, bool isScoped, int s
         if (!isScoped) { // Run the regular parse (main parser)
             string current_command = params -> at(index);
             cout << "Command=" << current_command <<" Index=" << index << endl;
-            index += command_map.at(current_command)->execute(params, index, scope);
+            index += commandMap.at(current_command)->execute(params, index, scope);
             index++;
         } else if (index < stopScope && params->at(index) != "}") { // Run the scoped parsing
             string current_command = params->at(index);
             cout << "Scoped- Command=" << current_command << " Index=" << index << endl;
-            index += command_map.at(current_command)->execute(params, index, scope);
+            index += commandMap.at(current_command)->execute(params, index, scope);
             index++;
         } else
             break;
     }
-    // Clear the variables from the scope we are leaving so they won't interrupt new variables
-    DatabaseManager::get().clearVariablesScope(scope);
 }
