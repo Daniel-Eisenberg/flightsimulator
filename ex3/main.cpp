@@ -3,6 +3,8 @@
 #include "Parser.h"
 #include "Command.h"
 
+
+
 int main(int argc, char *argv[]) {
 
 
@@ -21,9 +23,12 @@ int main(int argc, char *argv[]) {
     }
 
     Parser::parser(&a, 0, false, 0);
-    thread2 = false;
-    thread3 = false;
-//    while(signal1 || signal2){}
+    Command::killClientThread(0);
+    Command::killServerThread(0);
+    std::unique_lock<std::mutex> ul(Command::lock);
+    Command::cv.wait(ul, !Command::getKillClientThread());
+    Command::cv.wait(ul, !Command::getKillServerThread());
+
 
     return 0;
 }

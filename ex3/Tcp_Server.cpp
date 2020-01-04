@@ -41,72 +41,71 @@ char* getline(int fd){
 
 int Tcp_Server::create_socket(int port) {
 
-        int socket1 = socket(AF_INET, SOCK_STREAM, 0);
-        if (socket1 == -1) {
-            std::cerr << "could not create server socket" << std::endl;
-            return -1;
+    int socket1 = socket(AF_INET, SOCK_STREAM, 0);
+    if (socket1 == -1) {
+        std::cerr << "could not create server socket" << std::endl;
+        return -1;
+    }
+
+    sockaddr_in address;
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_port = htons(port);
+
+
+    // bind
+    if (::bind(socket1, (struct sockaddr *) &address, sizeof(address)) == -1) {
+        std::cerr << "could not bind the socket to an ip" << std::endl;
+        return -2;
+    }
+
+    //socket listen to port
+    if (listen(socket1, 1) == -1) {
+        std::cerr << "Error during listening" << std::endl;
+        return -3;
+    }
+
+    //accept client
+    int client_socket = accept(socket1, (struct sockaddr *) &address, (socklen_t *) &address);
+
+
+
+    while (!Command::getKillServerThread()) {
+
+        if (client_socket == -1) {
+            std::cerr << "Error accepting client" << std::endl;
+            return -4;
         }
 
-        sockaddr_in address;
-        address.sin_family = AF_INET;
-        address.sin_addr.s_addr = INADDR_ANY;
-        address.sin_port = htons(port);
+        char message[] = {0};
+        read(client_socket, message, 1024);
 
-
-        // bind
-        if (::bind(socket1, (struct sockaddr *) &address, sizeof(address)) == -1) {
-            std::cerr << "could not bind the socket to an ip" << std::endl;
-            return -2;
-        }
-
-        //socket listen to port
-        if (listen(socket1, 1) == -1) {
-            std::cerr << "Error during listening" << std::endl;
-            return -3;
-        }
-
-        //accept client
-        int client_socket = accept(socket1, (struct sockaddr *) &address, (socklen_t *) &address);
-
-
-
-        while (thread2) {
-
-            if (client_socket == -1) {
-                std::cerr << "Error accepting client" << std::endl;
-                return -4;
-            }
-
-            char message[] = {0};
-            read(client_socket, message, 1024);
-
-            //char* line = getline(client_socket);
-            //vector<string> values = Lexer::split(line, ",");
-            //vector<double> double_values;
+        //char* line = getline(client_socket);
+        //vector<string> values = Lexer::split(line, ",");
+        //vector<double> double_values;
 //            for (string x : values) {
 //                double_values.push_back(stod(x));
 //            }
-            int i;
-            string s;
-            for (i = 0; i < 1024; i++) {
-                if (message[i] == '\0')
-                    break;
-                s += message[i];
-            }
-            vector<string> values = Lexer::split(s, ",");
-            vector<double> double_values;
-            for (string x : values) {
-                if(x != "")
-                    double_values.push_back(stod(x));
-            }
-
-            if (double_values.size() == 36)
-                DatabaseManager::get().updateDataFromSim(double_values);
-            if (flag)
-                flag = false;
+        int i;
+        string s;
+        for (i = 0; i < 1024; i++) {
+            if (message[i] == '\0')
+                break;
+            s += message[i];
         }
-        close(socket1);
-        signal1 = false;
+        vector<string> values = Lexer::split(s, ",");
+        vector<double> double_values;
+        for (string x : values) {
+            if(x != "")
+                double_values.push_back(stod(x));
+        }
 
-
+        if (double_values.size() == 36)
+            DatabaseManager::get().updateDataFromSim(double_values);
+        Command::setFlag(1);
+        Command::cv.notify_one();
+    }
+    close(socket1);
+    Command::killServerThread(1);
+    Command::cv.notify_one();
 }

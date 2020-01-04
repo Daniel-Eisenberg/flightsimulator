@@ -7,18 +7,30 @@
 #include <list>
 #include <map>
 #include <vector>
+#include <condition_variable>
 #include "Variable.h"
 
-extern bool flag;
-extern bool thread2;
-extern bool thread3;
-extern bool signal1;
-extern bool signal2;
+//extern bool flag;
+//extern bool thread2;
+//extern bool thread3;
+//extern bool signal1;
+//extern bool signal2;
+static bool flag = true;
+static bool kill_server_thread = false;
+static bool kill_client_thread = false;
 class Command {
 public:
-    int virtual execute(std::vector<std::string> *list, int index, int scope) {};
+
+    static std::mutex lock;
+    static std::condition_variable cv;
+    int virtual execute(std::vector<std::string> *list, int index, int scope);
     int static findSign(std::vector<std::string> *list, int i, const std::string &sign);
     int static findClosingBracket(std::vector<std::string> *list, int i);
+    static void setFlag(int i);
+    static void killServerThread(int i);
+    static void killClientThread(int i);
+    static bool getKillServerThread();
+    static bool getKillClientThread();
 };
 
 class OpenServerCommand : public Command {

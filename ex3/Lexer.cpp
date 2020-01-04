@@ -33,6 +33,11 @@ std::vector<std::string> Lexer::split(std::string str, std::string delimiter){
     return arr;
 }
 
+std::vector<string> splitExpression(string str) {
+    std::vector<string> param = Lexer::split(str, "$");
+
+}
+
 
 void eraseDoubleQuotes(string &s) {
     size_t pos = 0;
