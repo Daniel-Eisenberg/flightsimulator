@@ -52,6 +52,9 @@ double parseMathExp(std::vector<std::string> *list, int i, int scope) {
     Expression *exp = inter->interpret(mathExp);
     value = exp->calculate();
 
+    delete inter;
+    delete exp;
+
     return value;
 }
 

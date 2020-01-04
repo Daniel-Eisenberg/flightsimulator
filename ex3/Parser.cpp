@@ -10,7 +10,6 @@ static unordered_map<string, Command*> commandMap;
 
 
 void setMap() {
-
     OpenServerCommand *c1 = new OpenServerCommand();
     ConnectCommand *c2 = new ConnectCommand();
     DefineVarCommand *c3 = new DefineVarCommand();
@@ -36,7 +35,8 @@ void setMap() {
 }
 
 /**
- *
+ * Parse the parameters we got from the lexer starting from a specfic index (main parse will start at index 0,
+ * and other ones such as while / if / function will start at their code begging).
  * @param params list of all the parameters created by the lexer
  * @param index the index to start the parsing from
  * @param isScoped a boolean that sets the scoped mode

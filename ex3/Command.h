@@ -62,7 +62,6 @@ class CreateFunctionCommand : public Command {
     int methodBeginIndex = 0;
     std::vector<std::string> varNames = {};
 public:
-    static std::map<std::string, CreateFunctionCommand*> functionMap;
     int getBeginIndex();
     std::vector<std::string> getVarNamesVector();
     int virtual execute(std::vector<std::string> *list, int index, int scope);

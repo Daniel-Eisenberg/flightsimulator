@@ -22,48 +22,10 @@ class DatabaseManager {
     std::map<std::string, double> *simVariablesMap;
     std::map<std::string, CreateFunctionCommand*> *functionMap;
     static DatabaseManager *instance;
-    // Initiate the array of the XML values with the simulator variable values.
-    std::vector<std::string> simArray  = {
-            "/instrumentation/airspeed-indicator/indicated-speed-kt",
-            "/sim/time/warp",
-            "/controls/switches/magnetos",
-            "/instrumentation/heading-indicator/offset-deg",
-            "/instrumentation/altimeter/indicated-altitude-ft",
-            "/instrumentation/altimeter/pressure-alt-ft",
-            "/instrumentation/attitude-indicator/indicated-pitch-deg",
-            "/instrumentation/attitude-indicator/indicated-roll-deg",
-            "/instrumentation/attitude-indicator/internal-pitch-deg",
-            "/instrumentation/attitude-indicator/internal-roll-deg",
-            "/instrumentation/encoder/indicated-altitude-ft",
-            "/instrumentation/encoder/pressure-alt-ft",
-            "/instrumentation/gps/indicated-altitude-ft",
-            "/instrumentation/gps/indicated-ground-speed-kt",
-            "/instrumentation/gps/indicated-vertical-speed",
-            "/instrumentation/heading-indicator/indicated-heading-deg",
-            "/instrumentation/magnetic-compass/indicated-heading-deg",
-            "/instrumentation/slip-skid-ball/indicated-slip-skid",
-            "/instrumentation/turn-indicator/indicated-turn-rate",
-            "/instrumentation/vertical-speed-indicator/indicated-speed-fpm",
-            "/controls/flight/aileron",
-            "/controls/flight/elevator",
-            "/controls/flight/rudder",
-            "/controls/flight/flaps",
-            "/controls/engines/engine/throttle",
-            "/controls/engines/current-engine/throttle",
-            "/controls/switches/master-avionics",
-            "/controls/switches/starter",
-            "/engines/active-engine/auto-start",
-            "/controls/flight/speedbrake",
-            "/sim/model/c172p/brake-parking",
-            "/controls/engines/engine/primer",
-            "/controls/engines/current-engine/mixture",
-            "/controls/switches/master-bat",
-            "/controls/switches/master-alt",
-            "/engines/engine/rpm"
-    };
-
+    std::vector<std::string> simArray  = {};
 public:
     static DatabaseManager& get();
+    ~DatabaseManager();
     std::queue<std::string>* getSimCommandsQ();
     void updateDataFromSim(std::vector<double> dataFromSim);
     void addToSimCommandsQ(std::string command);

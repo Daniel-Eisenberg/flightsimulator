@@ -19,10 +19,7 @@ using namespace std;
 
 class Parser {
 public:
-    OpenServerCommand c;
-    static std::vector<std::string> split(std::string str,std::string delimiter);
     static void parser(vector<string> *params, unsigned index, bool isScoped, int scope);
-    static vector<string> split(const string& s, char delimiter);
 };
 
 
