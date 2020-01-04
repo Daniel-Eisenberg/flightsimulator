@@ -9,14 +9,14 @@
 #include "Command.h"
 #include <queue>
 //hi
-std::string Message_to_server(std::vector<std::string> &values) {
-    std::string message;
-    for (const std::string &i : values) {
-        message = i + ", ";
-    }
-    message += '\0';
-    return message;
-}
+//std::string Message_to_server(std::vector<std::string> &values) {
+//    std::string message;
+//    for (const std::string &i : values) {
+//        message = i + ", ";
+//    }
+//    message += '\0';
+//    return message;
+//}
 
 
  int Client_Side::create(const char* ip, const char* port) {
