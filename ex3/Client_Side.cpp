@@ -39,7 +39,7 @@ std::string Message_to_server(std::vector<std::string> &values) {
         std:: cout <<"client connect to server" << std::endl;
     }
     sleep(10);
-    while (Command::getKillClientThread()) {
+    while (!Command::getKillClientThread()) {
         std::queue<std::string> queue = *DatabaseManager::get().getSimCommandsQ();
         std::string s;
         for (int i = 0; i < queue.size(); i++) {
@@ -55,11 +55,13 @@ std::string Message_to_server(std::vector<std::string> &values) {
             char buffer[1024] = {0};
             int valread = read(client_socket, buffer, 1024);
             std::cout << buffer << std::endl;
-            Command::setFlag(1);
-            Command::cv.notify_one();
+            if (Command::getClientFlag()) {
+                Command::setClientFlag(1);
+                Command::cv.notify_all();
+            }
         }
     }
      close(client_socket);
     Command::killClientThread(1);
-    Command::cv.notify_one();
+    Command::cv.notify_all();
 }

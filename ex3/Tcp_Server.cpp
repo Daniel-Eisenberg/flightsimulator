@@ -68,14 +68,15 @@ int Tcp_Server::create_socket(int port) {
     //accept client
     int client_socket = accept(socket1, (struct sockaddr *) &address, (socklen_t *) &address);
 
+    if (client_socket == -1) {
+        std::cerr << "Error accepting client" << std::endl;
+        return -4;
+    }
 
 
     while (!Command::getKillServerThread()) {
 
-        if (client_socket == -1) {
-            std::cerr << "Error accepting client" << std::endl;
-            return -4;
-        }
+
 
         char message[] = {0};
         read(client_socket, message, 1024);
@@ -99,13 +100,14 @@ int Tcp_Server::create_socket(int port) {
             if(x != "")
                 double_values.push_back(stod(x));
         }
-
         if (double_values.size() == 36)
             DatabaseManager::get().updateDataFromSim(double_values);
-        Command::setFlag(1);
-        Command::cv.notify_one();
+        if (Command::getServerFlag()) {
+            Command::setServerFlag(1);
+            Command::cv.notify_all();
+        }
     }
     close(socket1);
     Command::killServerThread(1);
-    Command::cv.notify_one();
+    Command::cv.notify_all();
 }
