@@ -10,11 +10,6 @@
 #include "Lexer.h"
 #include "DatabaseManager.h"
 
-
-
-
-
-
 char* getline(int fd){
     int index=0, check;
     char c;
@@ -75,8 +70,6 @@ int Tcp_Server::create_socket(int port) {
 
 
     while (!Command::getKillServerThread()) {
-
-
 
         char message[] = {0};
         read(client_socket, message, 1024);

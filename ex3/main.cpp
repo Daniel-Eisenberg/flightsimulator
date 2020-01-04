@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
 
 
     std::string filename = argv[argc - 1];
-    //filename = "fly.txt";
+    filename = "fly.txt";
     vector<string> a;
     try {
         a = Lexer::lexerCode(filename);
@@ -23,14 +23,13 @@ int main(int argc, char *argv[]) {
     }
 
     Parser::parser(&a, 0, false, 0);
-    Command::killClientThread(0);
-    Command::killServerThread(0);
     std::unique_lock<std::mutex> ul(Command::lock);
+    Command::killClientThread(0);
     Command::cv.wait(ul, [] {return !Command::getKillClientThread();});
+    Command::killServerThread(0);
     Command::cv.wait(ul, [] {return !Command::getKillServerThread();});
 
     Parser::clearMap();
-    delete &DatabaseManager::get();
 
     return 0;
 }

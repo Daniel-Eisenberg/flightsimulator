@@ -40,28 +40,30 @@
     }
     sleep(10);
     while (!Command::getKillClientThread()) {
-        std::queue<std::string> queue = *DatabaseManager::get().getSimCommandsQ();
+        std::queue<std::string> command_queue = *DatabaseManager::get().getSimCommandsQ();
         std::string s;
-        for (int i = 0; i < queue.size(); i++) {
-            const char* message = queue.back().c_str();
-            int sent = send(client_socket, message, strlen(message), 0);
-            if (sent == -1) {
-                std:: cerr << "error sending message" << std::endl;
-                return -3;
-            } else {
-                std::cout  << "message sent" << std:: endl;
-                queue.pop();
-            }
-            char buffer[1024] = {0};
-            int valread = read(client_socket, buffer, 1024);
-            std::cout << buffer << std::endl;
-            if (Command::getClientFlag()) {
-                Command::setClientFlag(1);
-                Command::cv.notify_all();
+        if (!command_queue.empty()) {
+            for (int i = 0; i < command_queue.size(); i++) {
+                const char* message = command_queue.back().c_str();
+                int sent = send(client_socket, message, strlen(message), 0);
+                if (sent == -1) {
+                    std:: cerr << "error sending message" << std::endl;
+                    return -3;
+                } else {
+                    //std::cout  << "message sent" << std:: endl;
+                    command_queue.pop();
+                }
+                //char buffer[1024] = {0};
+                //int valread = read(client_socket, buffer, 1024);
+                //std::cout << buffer << std::endl;
             }
         }
+        if (Command::getClientFlag()) {
+            Command::setClientFlag(1);
+            Command::cv.notify_all();
+        }
     }
-     close(client_socket);
+    close(client_socket);
     Command::killClientThread(1);
     Command::cv.notify_all();
 }
