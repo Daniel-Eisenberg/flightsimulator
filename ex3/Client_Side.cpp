@@ -50,7 +50,6 @@
                 command_queue->pop();
             }
         }
-        CommandUtil::cv_parser.notify_all();
         //release the main thread
         if (Client_Side::getClientFlag()) {
             Client_Side::setClientFlag(1);

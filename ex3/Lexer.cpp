@@ -118,7 +118,9 @@ vector<string> Lexer::lexerCode(std::string filename) {
     fstream file;
     file.open(filename, std::fstream::in);
     if (!file.is_open()) {
-        throw "didnt read file";
+        string msg = "Can't read file";
+        cout << msg << ", EXITING!" << endl;
+        throw msg;
     }
     string line, line_with_spaces;
     //the file is being read line by line

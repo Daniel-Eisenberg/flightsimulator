@@ -4,7 +4,6 @@
 
 #include <string>
 #include <vector>
-#include "Variable.h"
 #include "Tcp_Server.h"
 #include "Command.h"
 #include "Lexer.h"
@@ -20,7 +19,7 @@ int Tcp_Server::createAndRunServer(int port) {
 
     int socket1 = socket(AF_INET, SOCK_STREAM, 0);
     if (socket1 == -1) {
-        std::cerr << "could not create server socket" << std::endl;
+        std::cerr << "Could not create server socket" << std::endl;
         return -1;
     }
 
@@ -31,7 +30,7 @@ int Tcp_Server::createAndRunServer(int port) {
 
     // bind
     if (::bind(socket1, (struct sockaddr *) &address, sizeof(address)) == -1) {
-        std::cerr << "could not bind the socket to an ip" << std::endl;
+        std::cerr << "Could not bind the socket to an ip" << std::endl;
         return -2;
     }
 

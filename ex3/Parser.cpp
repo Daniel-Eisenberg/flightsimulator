@@ -49,16 +49,12 @@ void Parser::parser(vector<string> *params, unsigned index, bool isScoped, int s
         stopScope = index + CommandUtil::findClosingBracket(params, index - 2) + 1;
 
     while (index < params -> size()) {
-        std::unique_lock<std::mutex> ul(CommandUtil::lock_parser);
-        CommandUtil::cv_parser.wait(ul, []{return DatabaseManager::get().getSimCommandsQ()->empty();});
         if (!isScoped) { // Run the regular parse (main parser)
             string current_command = params -> at(index);
-            cout << "Command=" << current_command <<" Index=" << index << endl;
             index += commandMap.at(current_command)->execute(params, index, scope);
             index++;
         } else if (index < stopScope && params->at(index) != "}") { // Run the scoped parsing
             string current_command = params->at(index);
-            cout << "Scoped- Command=" << current_command << " Index=" << index << endl;
             index += commandMap.at(current_command)->execute(params, index, scope);
             index++;
         } else

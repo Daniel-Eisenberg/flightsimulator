@@ -396,8 +396,7 @@ int PrintCommand::execute(std::vector<std::string> *list, int i, int scope)  {
  */
 int SleepCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     string data = list->at(i + 1);
-//    sleep(stoi(data));
-    sleep(1);
+    sleep(stoi(data));
 
     (void)scope; // Suppress unused warning
     return args;

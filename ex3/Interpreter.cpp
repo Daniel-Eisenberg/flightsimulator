@@ -173,7 +173,12 @@ Expression* Interpreter::reversePolishNotation(queue<Token> shunting_yard) {
             string varName = shunting_yard.front().getValue();
             double varValue = 0;
             if (isalpha(varName[0]) && DatabaseManager::get().isVariableExist(varName)) {
-                varValue = DatabaseManager::get().getFromVariablesMap(varName, 0)->getValue();
+                try {
+                    varValue = DatabaseManager::get().getFromVariablesMap(varName, 0)->getValue();
+                } catch (char *e) {
+                    varValue = 0;
+                    cout << "Error getting variable, setting value to 0: " << e;
+                }
             } else {
                 varValue = getVariable(varName);
             }
