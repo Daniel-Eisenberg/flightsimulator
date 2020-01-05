@@ -15,10 +15,7 @@
 //extern bool thread3;
 //extern bool signal1;
 //extern bool signal2;
-static bool server_flag = true;
-static bool client_flag = true;
-static bool kill_server_thread = false;
-static bool kill_client_thread = false;
+
 class Command {
 public:
 
@@ -27,14 +24,6 @@ public:
     int virtual execute(std::vector<std::string> *list, int index, int scope) {};
     int static findSign(std::vector<std::string> *list, int i, const std::string &sign);
     int static findClosingBracket(std::vector<std::string> *list, int i);
-    static void setServerFlag(int i);
-    static void setClientFlag(int i);
-    static bool getServerFlag();
-    static bool getClientFlag();
-    static void killServerThread(int i);
-    static void killClientThread(int i);
-    static bool getKillServerThread();
-    static bool getKillClientThread();
     virtual ~Command() {}; // No heap memory allocated
 };
 

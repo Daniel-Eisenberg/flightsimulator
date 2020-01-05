@@ -10,31 +10,12 @@
 #include "Lexer.h"
 #include "DatabaseManager.h"
 
-char* getline(int fd){
-    int index=0, check;
-    char c;
-    char* line = (char*)malloc(10 * sizeof(char));
-    check = read(fd, &c, 1);
-
-    while(c != '\n' && check == 1){
-        if((index+1) % 10 == 0){
-            line = (char*)realloc(line, index+11);
-        }
-        line[index] = c;
-        check = read(fd, &c, 1);
-        index++;
-
-    }
-    if((index+1) % 10 == 0){
-        line = (char*)realloc(line, index+11);
-    }
-    line[index] = '\0';
-    return line;
-}
-
-
-
-int Tcp_Server::create_socket(int port) {
+/**
+ * create server socket that get requests from the simulator. the requests are values that gets updated in a data base.
+ * @param port od the sever
+ * @return a number if there is an error of some sort.
+ */
+int Tcp_Server::createAndRunServer(int port) {
 
     int socket1 = socket(AF_INET, SOCK_STREAM, 0);
     if (socket1 == -1) {
@@ -62,24 +43,15 @@ int Tcp_Server::create_socket(int port) {
 
     //accept client
     int client_socket = accept(socket1, (struct sockaddr *) &address, (socklen_t *) &address);
-
     if (client_socket == -1) {
         std::cerr << "Error accepting client" << std::endl;
         return -4;
     }
+    // loop condition updated by the main function
 
-
-    while (!Command::getKillServerThread()) {
-
+    while (!Tcp_Server::getKillServerThread()) {
         char message[] = {0};
         read(client_socket, message, 1024);
-
-        //char* line = getline(client_socket);
-        //vector<string> values = Lexer::split(line, ",");
-        //vector<double> double_values;
-//            for (string x : values) {
-//                double_values.push_back(stod(x));
-//            }
         int i;
         string s;
         for (i = 0; i < 1024; i++) {
@@ -93,14 +65,53 @@ int Tcp_Server::create_socket(int port) {
             if(x != "")
                 double_values.push_back(stod(x));
         }
+        //sends values only when it gets all the values of the simulator
         if (double_values.size() == 36)
             DatabaseManager::get().updateDataFromSim(double_values);
-        if (Command::getServerFlag()) {
-            Command::setServerFlag(1);
+        //release the main thread
+        if (Tcp_Server::getServerFlag()) {
+            Tcp_Server::setServerFlag(1);
             Command::cv.notify_all();
         }
     }
     close(socket1);
-    Command::killServerThread(1);
+    //update the main thread that the thread is finished
+    Tcp_Server::killServerThread(1);
     Command::cv.notify_all();
+}
+
+/**
+ * realse the block call of the open data server command.
+ * @param i when i equals 0 we release the block call
+ */
+void Tcp_Server::setServerFlag(int i) {
+    if (!i) {
+        server_flag = true;
+    } else {
+        server_flag = false;
+    }
+}
+/**
+ * Kill the server thread.
+ * @param i when i equals 0 we kill the thread
+ */
+void Tcp_Server::killServerThread(int i) {
+    if (!i)
+        kill_server_thread = true;
+    else
+        kill_server_thread = false;
+}
+
+/**
+ * @return the boolean var in charge of killing the thread.
+ */
+bool Tcp_Server::getKillServerThread() {
+    return kill_server_thread;
+}
+
+/**
+ * @return the flag.
+ */
+bool Tcp_Server::getServerFlag() {
+    return server_flag;
 }

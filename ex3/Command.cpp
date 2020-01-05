@@ -148,7 +148,7 @@ bool static evaluateLogicalExp(std::vector<std::string> *list, int i, int scope)
  */
 int OpenServerCommand::execute(std::vector<std::string> *list, int i, int scope) {
     int port = stoi(list->at(i + 1));
-    std::thread serverThread(&Tcp_Server::create_socket, port);
+    std::thread serverThread(&Tcp_Server::createAndRunServer, port);
     std::unique_lock<std::mutex> ul(lock);
     cv.wait(ul, [] {return server_flag == false;});
     serverThread.detach();
@@ -165,7 +165,7 @@ int OpenServerCommand::execute(std::vector<std::string> *list, int i, int scope)
 int ConnectCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     const char* ip = list->at(i + 1).c_str();
     const char* port = list->at(i + 2).c_str();
-    std::thread connectionThread(&Client_Side::create, ip, port);
+    std::thread connectionThread(&Client_Side::createAndRunClient, ip, port);
     std::unique_lock<std::mutex> ul(lock);
     cv.wait(ul, [] {return client_flag == false;});
     connectionThread.detach();
@@ -397,49 +397,4 @@ int SleepCommand::execute(std::vector<std::string> *list, int i, int scope)  {
 //    sleep(stoi(data));
     sleep(1);
     return args;
-}
-
-void Command::setServerFlag(int i) {
-    if (!i) {
-        server_flag = true;
-    } else {
-        server_flag = false;
-    }
-}
-
-void Command::setClientFlag(int i) {
-    if (!i) {
-        client_flag = true;
-    } else {
-        client_flag = false;
-    }
-}
-
-void Command::killServerThread(int i) {
-    if (!i)
-        kill_server_thread = true;
-    else
-        kill_server_thread = false;
-}
-
-void Command::killClientThread(int i) {
-    if (!i)
-        kill_client_thread = true;
-    else
-        kill_client_thread = false;
-}
-
-bool Command::getKillClientThread() {
-    return kill_client_thread;
-}
-bool Command::getKillServerThread() {
-    return kill_server_thread;
-}
-
-bool Command::getServerFlag() {
-    return server_flag;
-}
-
-bool Command::getClientFlag() {
-    return client_flag;
 }

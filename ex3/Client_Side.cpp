@@ -8,18 +8,15 @@
 #include "DatabaseManager.h"
 #include "Command.h"
 #include <queue>
-//hi
-//std::string Message_to_server(std::vector<std::string> &values) {
-//    std::string message;
-//    for (const std::string &i : values) {
-//        message = i + ", ";
-//    }
-//    message += '\0';
-//    return message;
-//}
 
-
- int Client_Side::create(const char* ip, const char* port) {
+/**
+ * create a socket that acts as a client. The client sends updates to the simulator.
+ * the function finishes when the main update the boolean value that keeps the loop running.
+ * @param ip the ip of the socket
+ * @param port the port of the socket
+ * @return a number if there is a failure of any sort
+ */
+ int Client_Side::createAndRunClient(const char* ip, const char* port) {
 
     int client_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (client_socket == -1) {
@@ -39,9 +36,10 @@
         std:: cout <<"client connect to server" << std::endl;
     }
     sleep(10);
-    while (!Command::getKillClientThread()) {
+    // loop condition updated by the main function
+    while (!Client_Side::getKillClientThread()) {
         std::queue<std::string> command_queue = *DatabaseManager::get().getSimCommandsQ();
-        std::string s;
+        //pass commands to the simulator
         while (!command_queue.empty()){
             const char* message = command_queue.back().c_str();
             int sent = send(client_socket, message, strlen(message), 0);
@@ -49,20 +47,53 @@
                 std:: cerr << "error sending message" << std::endl;
                 return -3;
             } else {
-                //std::cout  << "message sent" << std:: endl;
                 command_queue.pop();
             }
-
             //char buffer[1024] = {0};
             //int valread = read(client_socket, buffer, 1024);
             //std::cout << buffer << std::endl;
         }
-        if (Command::getClientFlag()) {
-            Command::setClientFlag(1);
+        //release the main thread
+        if (Client_Side::getClientFlag()) {
+            Client_Side::setClientFlag(1);
             Command::cv.notify_all();
         }
     }
     close(client_socket);
-    Command::killClientThread(1);
+    //update the main thread that the thread is finished
+    Client_Side::killClientThread(1);
     Command::cv.notify_all();
+}
+/**
+ * release the block call of the connect control client command.
+ * @param i when i equals 0 we release the block call
+ */
+void Client_Side::setClientFlag(int i) {
+    if (!i) {
+        client_flag = true;
+    } else {
+        client_flag = false;
+    }
+}
+/**
+ * Kill the client thread.
+ * @param i when i equals 0 we kill the thread
+ */
+void Client_Side::killClientThread(int i) {
+    if (!i)
+        kill_client_thread = true;
+    else
+        kill_client_thread = false;
+}
+/**
+ * @return the boolean var in charge of killing the thread.
+ */
+bool Client_Side::getKillClientThread() {
+    return kill_client_thread;
+}
+/**
+ * @return the flag.
+ */
+bool Client_Side::getClientFlag() {
+    return client_flag;
 }
