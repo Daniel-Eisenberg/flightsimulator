@@ -49,8 +49,8 @@ void Parser::parser(vector<string> *params, unsigned index, bool isScoped, int s
         stopScope = index + CommandUtil::findClosingBracket(params, index - 2) + 1;
 
     while (index < params -> size()) {
-        if (!DatabaseManager::get().getSimCommandsQ()->empty())
-            continue;
+        std::unique_lock<std::mutex> ul(CommandUtil::lock_parser);
+        CommandUtil::cv_parser.wait(ul, []{return DatabaseManager::get().getSimCommandsQ()->empty();});
         if (!isScoped) { // Run the regular parse (main parser)
             string current_command = params -> at(index);
             cout << "Command=" << current_command <<" Index=" << index << endl;

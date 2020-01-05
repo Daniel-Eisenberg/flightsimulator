@@ -14,6 +14,8 @@ class CommandUtil {
 public:
     static std::mutex lock;
     static std::condition_variable cv;
+    static std::mutex lock_parser;
+    static std::condition_variable cv_parser;
     int static findSign(std::vector<std::string> *list, int i, const std::string &sign);
     int static findClosingBracket(std::vector<std::string> *list, int i);
 };
