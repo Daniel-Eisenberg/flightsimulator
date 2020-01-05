@@ -10,6 +10,7 @@
 #include "Lexer.h"
 #include "DatabaseManager.h"
 
+void cleanString(char* str, int i);
 /**
  * create server socket that get requests from the simulator. the requests are values that gets updated in a data base.
  * @param port od the sever
@@ -28,7 +29,6 @@ int Tcp_Server::createAndRunServer(int port) {
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(port);
 
-
     // bind
     if (::bind(socket1, (struct sockaddr *) &address, sizeof(address)) == -1) {
         std::cerr << "could not bind the socket to an ip" << std::endl;
@@ -41,17 +41,20 @@ int Tcp_Server::createAndRunServer(int port) {
         return -3;
     }
 
+
     //accept client
-    int client_socket = accept(socket1, (struct sockaddr *) &address, (socklen_t *) &address);
-    if (client_socket == -1) {
-        std::cerr << "Error accepting client" << std::endl;
-        return -4;
-    }
+        int client_socket = accept(socket1, (struct sockaddr *) &address, (socklen_t *) &address);
+        if (client_socket == -1) {
+            std::cerr << "Error accepting client" << std::endl;
+            return -4;
+        }
+
     // loop condition updated by the main function
 
+    char message[1024] = {0};
     while (!Tcp_Server::getKillServerThread()) {
-        char message[] = {0};
-        read(client_socket, message, 1024);
+
+        int valread = read(client_socket, message, 1024);
         int i;
         string s;
         for (i = 0; i < 1024; i++) {
@@ -60,7 +63,7 @@ int Tcp_Server::createAndRunServer(int port) {
             s += message[i];
         }
         vector<string> values = Lexer::split(s, ",");
-        vector<double> double_values = {};
+        vector<double> double_values;
         for (string x : values) {
             if(x != "")
                 double_values.push_back(stod(x));
@@ -69,11 +72,11 @@ int Tcp_Server::createAndRunServer(int port) {
         if (double_values.size() == 36)
             DatabaseManager::get().updateDataFromSim(double_values);
         //release the main thread
+        cleanString(message, i);
         if (Tcp_Server::getServerFlag()) {
             Tcp_Server::setServerFlag(1);
             Command::cv.notify_all();
         }
-        sleep(10);
     }
     close(socket1);
     //update the main thread that the thread is finished
@@ -116,4 +119,10 @@ bool Tcp_Server::getKillServerThread() {
  */
 bool Tcp_Server::getServerFlag() {
     return server_flag;
+}
+
+void cleanString(char* str, int i) {
+    for (int j = 0; j < i; j++) {
+        str[j] = '\0';
+    }
 }

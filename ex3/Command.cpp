@@ -147,11 +147,11 @@ bool static evaluateLogicalExp(std::vector<std::string> *list, int i, int scope)
  * @return
  */
 int OpenServerCommand::execute(std::vector<std::string> *list, int i, int scope) {
-//    int port = stoi(list->at(i + 1));
-//    std::thread serverThread(&Tcp_Server::createAndRunServer, port);
-//    std::unique_lock<std::mutex> ul(lock);
-//    cv.wait(ul, [] {return !Tcp_Server::getServerFlag();});
-//    serverThread.detach();
+    int port = stoi(list->at(i + 1));
+    std::thread serverThread(&Tcp_Server::createAndRunServer, port);
+    std::unique_lock<std::mutex> ul(lock);
+    cv.wait(ul, [] {return !Tcp_Server::getServerFlag();});
+    serverThread.detach();
     return args;
 }
 
@@ -163,12 +163,12 @@ int OpenServerCommand::execute(std::vector<std::string> *list, int i, int scope)
  * @return number of arguments that the parser should skip
  */
 int ConnectCommand::execute(std::vector<std::string> *list, int i, int scope)  {
-//    const char* ip = list->at(i + 1).c_str();
-//    const char* port = list->at(i + 2).c_str();
-//    std::thread connectionThread(&Client_Side::createAndRunClient, ip, port);
-//    std::unique_lock<std::mutex> ul(lock);
-//    cv.wait(ul, [] {return !Client_Side::getClientFlag();});
-//    connectionThread.detach();
+    const char* ip = list->at(i + 1).c_str();
+    const char* port = list->at(i + 2).c_str();
+    std::thread connectionThread(&Client_Side::createAndRunClient, ip, port);
+    std::unique_lock<std::mutex> ul(lock);
+    cv.wait(ul, [] {return !Client_Side::getClientFlag();});
+    connectionThread.detach();
     return args;
 }
 
