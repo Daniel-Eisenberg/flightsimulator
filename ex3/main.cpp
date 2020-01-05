@@ -2,6 +2,8 @@
 #include "Lexer.h"
 #include "Parser.h"
 #include "Command.h"
+#include "Tcp_Server.h"
+#include "Client_Side.h"
 
 
 
@@ -15,6 +17,10 @@ int main(int argc, char *argv[]) {
         a = Lexer::lexerCode(filename);
     } catch (const char* e){
         return -20;
+    }
+
+    for (string &x : a) {
+        cout << x << endl;
     }
 
     Parser::parser(&a, 0, false, 0);
