@@ -143,6 +143,17 @@ vector<string> Lexer::lexerCode(std::string filename) {
             params.push_back(temp.at(0));
             temp = split(temp.at(1), ')');
             params.push_back(temp.at(0));
+        }  else if (line.rfind("Print", 0) == 0) {
+            while (line_with_spaces.rfind(" ", 0) == 0) {
+                line_with_spaces.erase(0, 1);
+            }
+            vector<string> param = split(line_with_spaces, '(');
+            params.push_back(param.at(0));
+            params.push_back(split(param.at(1), ')').at(0));
+        } else if (line.rfind("Sleep", 0) == 0) {
+            vector<string> param = split(line, '(');
+            params.push_back(param.at(0));
+            params.push_back(split(param.at(1), ')').at(0));
         } else if (line.rfind("var", 0) == 0) {
             params.push_back("var");
             unsigned i;
@@ -199,17 +210,6 @@ vector<string> Lexer::lexerCode(std::string filename) {
             params.push_back("$");
             params.push_back(temp.at(1));
             params.push_back("$");
-        }  else if (line.rfind("Print", 0) == 0) {
-            while (line_with_spaces.rfind(" ", 0) == 0) {
-                line_with_spaces.erase(0, 1);
-            }
-            vector<string> param = split(line_with_spaces, '(');
-            params.push_back(param.at(0));
-            params.push_back(split(param.at(1), ')').at(0));
-        } else if (line.rfind("Sleep", 0) == 0) {
-            vector<string> param = split(line, '(');
-            params.push_back(param.at(0));
-            params.push_back(split(param.at(1), ')').at(0));
         } else if (line.rfind("}", 0) == 0) {
             params.push_back("}");
         } else if (line.find('{') != string::npos) {
@@ -218,11 +218,12 @@ vector<string> Lexer::lexerCode(std::string filename) {
             params.push_back(param.at(0));
             functions[param.at(0)] = true;
             param = split(param.at(1), ')');
-            if (param.at(0).rfind("var", 0) == 0) {
-                param = split(param.at(0), "var");
+            param = split(param.at(0), ',');
+            if (param.size() > 0 && param.at(0).rfind("var", 0) == 0) {
                 for (string x : param) {
+                    vector<string> paramTemp = split(x, "var");
                     params.push_back("var");
-                    params.push_back(x);
+                    params.push_back(paramTemp.at(0));
                 }
             }
             params.push_back("{");
