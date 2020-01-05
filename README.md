@@ -124,8 +124,15 @@ The ```Command``` class and subclasses hold the actual actions that we will run.
 
 ### Run the project:
 1. Create a code file with commands such as the one above (ports and ip should always be the same as the example code).
-2. Compile and run the project with the code file as an argument.
-3. Run the simulator after the project is running.
+2. Compile the code using:
+```
+g++ -std=c++14 *.cpp -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic -o a.out -pthread
+```
+3. Run a.out with the .txt code file as an argument:
+```
+.\a.out fly.txt
+```
+4. Run the simulator after the project is running.
 
 
 Enjoy!
