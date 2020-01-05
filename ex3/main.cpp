@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
 
 
     std::string filename = argv[argc - 1];
-    filename = "fly.txt";
+    //filename = "fly.txt";
     vector<string> a;
     try {
         a = Lexer::lexerCode(filename);
@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
         return -20;
     }
 
-    
+
     Parser::parser(&a, 0, false, 0);
     std::unique_lock<std::mutex> ul(Command::lock);
     Client_Side::killClientThread(0);

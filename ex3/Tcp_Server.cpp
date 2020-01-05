@@ -13,7 +13,7 @@
 /**
  * create server socket that get requests from the simulator. the requests are values that gets updated in a data base.
  * @param port od the sever
- * @return a number if there is an error of some sort.
+ * @return a number different then 0 if there is a failure of any sort
  */
 int Tcp_Server::createAndRunServer(int port) {
 
@@ -78,6 +78,7 @@ int Tcp_Server::createAndRunServer(int port) {
     //update the main thread that the thread is finished
     Tcp_Server::killServerThread(1);
     Command::cv.notify_all();
+    return 0;
 }
 
 /**

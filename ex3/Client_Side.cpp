@@ -14,7 +14,7 @@
  * the function finishes when the main update the boolean value that keeps the loop running.
  * @param ip the ip of the socket
  * @param port the port of the socket
- * @return a number if there is a failure of any sort
+ * @return a number different then 0 if there is a failure of any sort
  */
  int Client_Side::createAndRunClient(const char* ip, const char* port) {
 
@@ -63,6 +63,7 @@
     //update the main thread that the thread is finished
     Client_Side::killClientThread(1);
     Command::cv.notify_all();
+    return 0;
 }
 /**
  * release the block call of the connect control client command.

@@ -30,7 +30,7 @@ public:
     void updateDataFromSim(std::vector<double> dataFromSim);
     void addToSimCommandsQ(std::string command);
     void putToVariablesMap(std::string varName, Variable* variable);
-    Variable* getFromVariablesMap(std::string varName, int scope) throw();
+    Variable* getFromVariablesMap(std::string varName, int scope) noexcept(false);
     bool isVariableExist(std::string varName);
     void putToFunctionMap(std::string funcName, CreateFunctionCommand* functionCommand);
     CreateFunctionCommand getFromFunctionMap(std::string funcName);

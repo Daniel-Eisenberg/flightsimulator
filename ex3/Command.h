@@ -21,7 +21,7 @@ public:
 
     static std::mutex lock;
     static std::condition_variable cv;
-    int virtual execute(std::vector<std::string> *list, int index, int scope) {};
+    virtual int execute(std::vector<std::string> *list, int index, int scope){return 0;};
     int static findSign(std::vector<std::string> *list, int i, const std::string &sign);
     int static findClosingBracket(std::vector<std::string> *list, int i);
     virtual ~Command() {}; // No heap memory allocated
