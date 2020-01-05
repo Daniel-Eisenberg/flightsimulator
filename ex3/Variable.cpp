@@ -58,7 +58,7 @@ double Variable::getValueFromServer(std::string sim) {
  * @param sim the location in of the variable in the simulator
  */
 void Variable::updateValueToServer(double value, std::string sim) {
-    std::string command = "set " + sim + " " + std::to_string(value);
+    std::string command = "set " + sim + " " + std::to_string(value) + "\r\n";
     DatabaseManager::get().addToSimCommandsQ(command);
 }
 

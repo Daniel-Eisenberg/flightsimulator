@@ -54,7 +54,7 @@ int Tcp_Server::createAndRunServer(int port) {
     char message[1024] = {0};
     while (!Tcp_Server::getKillServerThread()) {
 
-        int valread = read(client_socket, message, 1024);
+        read(client_socket, message, 1024);
         int i;
         string s;
         for (i = 0; i < 1024; i++) {

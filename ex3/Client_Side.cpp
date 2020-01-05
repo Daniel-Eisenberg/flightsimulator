@@ -20,20 +20,20 @@
 
     int client_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (client_socket == -1) {
-        std::cerr << "could not create client socket" << std::endl;
+        std::cerr << "Could not create client socket" << std::endl;
         return -1;
     }
 
     sockaddr_in address;
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = inet_addr("127.0.0.1");
-    address.sin_port = htons(5402);
+    address.sin_addr.s_addr = inet_addr(ip);
+    address.sin_port = htons(*port);
     int is_connect = connect(client_socket, (struct sockaddr*)&address, sizeof(address));
     if (is_connect == -1) {
-        std:: cerr << "could not connect to server" << std:: endl;
+        std:: cerr << "Could not connect to server" << std:: endl;
         return -2;
     } else {
-        std:: cout <<"client connect to server" << std::endl;
+        std:: cout <<"Client connect to server" << std::endl;
     }
     sleep(10);
     // loop condition updated by the main function
@@ -44,14 +44,11 @@
             const char* message = command_queue->front().c_str();
             int sent = send(client_socket, message, strlen(message), 0);
             if (sent == -1) {
-                std:: cerr << "error sending message" << std::endl;
+                std:: cerr << "Error sending message" << std::endl;
                 return -3;
             } else {
                 command_queue->pop();
             }
-            //char buffer[1024] = {0};
-            //int valread = read(client_socket, buffer, 1024);
-            //std::cout << buffer << std::endl;
         }
         //release the main thread
         if (Client_Side::getClientFlag()) {

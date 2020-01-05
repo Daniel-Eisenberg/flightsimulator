@@ -90,7 +90,7 @@ void DatabaseManager::updateDataFromSim(std::vector<double> dataFromSim) {
     for (int i = 0; i < dataFromSim.size(); i++) {
         string sim = simArray.at(i);
         double value = dataFromSim[i];
-        std::cout << "updateDataFromSim sim=" << sim << " value=" << value <<endl;
+//        std::cout << "updateDataFromSim sim=" << sim << " value=" << value << endl;
         (*simVariablesMap)[sim] = value;
     }
 }
@@ -163,10 +163,6 @@ void DatabaseManager::putToFunctionMap(std::string funcName, CreateFunctionComma
 
 CreateFunctionCommand DatabaseManager::getFromFunctionMap(std::string funcName) {
     return *(*functionMap)[funcName];
-}
-
-bool DatabaseManager::isFunctionExist(std::string funcName) {
-    return functionMap->count(funcName) > 0;
 }
 
 /**

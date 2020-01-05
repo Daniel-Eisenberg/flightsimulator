@@ -34,7 +34,6 @@ public:
     bool isVariableExist(std::string varName);
     void putToFunctionMap(std::string funcName, CreateFunctionCommand* functionCommand);
     CreateFunctionCommand getFromFunctionMap(std::string funcName);
-    bool isFunctionExist(std::string funcName);
     double getFromSimVariablesMap(std::string varName);
     void initSimVariablesMap();
     void clearVariablesScope(int scope);

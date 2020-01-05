@@ -16,8 +16,6 @@
 using namespace std;
 // Local static class methods
 // ----------------------------
-
-
 std::mutex Command::lock;
 std::condition_variable Command::cv;
 
@@ -138,7 +136,6 @@ bool static evaluateLogicalExp(std::vector<std::string> *list, int i, int scope)
 
 // Subclasses methods
 // ---------------------------
-
 /**
  * Initiate the server connection
  * @param list of parameters
@@ -202,7 +199,7 @@ int DefineVarCommand::execute(std::vector<std::string> *list, int i, int scope) 
             DatabaseManager::get().putToVariablesMap(varName, var);
             args = 2 + findSign(list, i + 4, "$");
         } else
-            cout << "ERROR no math exp $ after = tag.";
+            cout << "Error: no math exp $ after = tag.";
     }
 
     return args;

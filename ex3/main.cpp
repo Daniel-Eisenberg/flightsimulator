@@ -11,7 +11,6 @@ int main(int argc, char *argv[]) {
 
 
     std::string filename = argv[argc - 1];
-    filename = "fly.txt";
     vector<string> a;
     try {
         a = Lexer::lexerCode(filename);
