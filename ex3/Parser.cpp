@@ -64,7 +64,7 @@ void Parser::parser(vector<string> *params, unsigned index, bool isScoped, int s
 }
 
 void Parser::clearMap() {
-    for (auto&& [key, value] : commandMap) {
-        delete value;
+    for (const auto &k : commandMap) {
+        delete k.second;
     }
 }
