@@ -56,8 +56,7 @@ for more information about controlling the simulator visit [flight gear wiki](ht
 34. takeoff(1000)
 35. Print("done")
 ```
-
-### Variables
+#### Variables
 As you can see in the example, we can assign variables to only get data from the simulator using <-,
 or also update their value inside the simulator using ->.
 
@@ -66,21 +65,18 @@ Every variable declaration has to start with the var keyword.
 
 When declaring a variable inside function / if / while it will created as a scoped variable, such variables are only accessible by higher scopes or themselves and will be deleted after we leave their scope.
 
-### Print
+#### Print
 Use the keyword Print(variable / string value) to print something to the screen, use "string" to print regular string, and don't use varName in
-
-### Sleep
+#### Sleep
 Use the keyword Sleep(integer value) to make the main thread sleep for the requested amount of time in milliseconds.
-
-### Functions
+#### Functions
 Declare a method by calling methodName(var varName1, ...) { method content }
 
 Run the method by calling existingMethodName(var1Value, ...)
 The values sent to a method are Double or existing variables.
-
-### While loop
+#### While loop
 Declare a while loop by calling while e1 [CONDITION] e2 { loop content }
-### If condition
+#### If condition
 Declare an if condition by calling if e1 [CONDITION] e2 { if content }
 
 ## Client - Server flow of the simulator
@@ -102,7 +98,7 @@ this command opens a thread in which we open and run a tcp client. Now, we act a
 ## Interpreting the code
 in order to get the program running we need to be able to interpret the code. we have to parts to this section of the program:
 
-### 1. Lexer
+### Lexer
 The ```Lexer``` class has a unique function:
 
 ```c++
@@ -120,9 +116,11 @@ The values ```lexerCode() ```  would return will be:
 
 ```openDataServer, 5400, connectControlClient, 127.0.0.1, 5402```
 
-### 2. Parser
+### Parser
 The ```Parser``` class iterate over the vector given by  the ```Lexer``` and perform a command each time it finds one.
  
+### Command
+The ```Command``` class and subclasses hold the actual actions that we will run. The commands are run from the parser.
 
 ### Run the project:
 1. Create a code file with commands such as the one above (ports and ip should always be the same as the example code).
