@@ -87,7 +87,7 @@ std::queue<std::string>* DatabaseManager::getSimCommandsQ() {
  * @param dataFromSim raw data from simulator
  */
 void DatabaseManager::updateDataFromSim(std::vector<double> dataFromSim) {
-    for (int i = 0; i < dataFromSim.size(); i++) {
+    for (unsigned long i = 0; i < dataFromSim.size(); i++) {
         string sim = simArray.at(i);
         double value = dataFromSim[i];
 //        std::cout << "updateDataFromSim sim=" << sim << " value=" << value << endl;

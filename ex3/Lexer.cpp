@@ -107,6 +107,7 @@ string findOperator(string str) {
 
 /**
  * the lexer method. open a file containing code and split the code to tokens.
+ * Dollar signs are used to note a math expression so there will be a dollar sign before and after a math expression.
  * @param filename the file the function reads from
  * @return a vector containing of all the tokens
  */
@@ -158,7 +159,6 @@ vector<string> Lexer::lexerCode(std::string filename) {
             params.push_back("var");
             unsigned i;
             for (i = 3; i < line.length(); i++) {
-                char a = line.at(i);
                 if (line.at(i) == '-' || line.at(i) == '<' || line.at(i) == '=') {
                     break;
                 }
@@ -178,7 +178,7 @@ vector<string> Lexer::lexerCode(std::string filename) {
                 params.push_back(line.substr(start_pos + 2, end_pos  - start_pos - 3));
             } else {
                 params.push_back("=");
-                vector<string> temp = split(line, '=');
+                temp = split(line, '=');
                 params.push_back("$");
                 params.push_back(temp.at(1));
                 params.push_back("$");
@@ -204,7 +204,7 @@ vector<string> Lexer::lexerCode(std::string filename) {
             params.push_back("{");
         } else if (line.find('=') != string::npos) {
             params.push_back("#");
-            vector<string> temp = split(line, '=');
+            temp = split(line, '=');
             params.push_back(temp.at(0));
             params.push_back("=");
             params.push_back("$");
@@ -240,7 +240,6 @@ vector<string> Lexer::lexerCode(std::string filename) {
                 }
                 params.push_back(")");
             }
-
         }
     }
     file.close();
