@@ -121,6 +121,11 @@ bool Tcp_Server::getServerFlag() {
     return server_flag;
 }
 
+/**
+ * clean a given string
+ * @param str the string
+ * @param i the end of the string
+ */
 void cleanString(char* str, int i) {
     for (int j = 0; j < i; j++) {
         str[j] = '\0';
