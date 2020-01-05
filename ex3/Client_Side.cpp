@@ -42,21 +42,20 @@
     while (!Command::getKillClientThread()) {
         std::queue<std::string> command_queue = *DatabaseManager::get().getSimCommandsQ();
         std::string s;
-        if (!command_queue.empty()) {
-            for (int i = 0; i < command_queue.size(); i++) {
-                const char* message = command_queue.back().c_str();
-                int sent = send(client_socket, message, strlen(message), 0);
-                if (sent == -1) {
-                    std:: cerr << "error sending message" << std::endl;
-                    return -3;
-                } else {
-                    //std::cout  << "message sent" << std:: endl;
-                    command_queue.pop();
-                }
-                //char buffer[1024] = {0};
-                //int valread = read(client_socket, buffer, 1024);
-                //std::cout << buffer << std::endl;
+        while (!command_queue.empty()){
+            const char* message = command_queue.back().c_str();
+            int sent = send(client_socket, message, strlen(message), 0);
+            if (sent == -1) {
+                std:: cerr << "error sending message" << std::endl;
+                return -3;
+            } else {
+                //std::cout  << "message sent" << std:: endl;
+                command_queue.pop();
             }
+
+            //char buffer[1024] = {0};
+            //int valread = read(client_socket, buffer, 1024);
+            //std::cout << buffer << std::endl;
         }
         if (Command::getClientFlag()) {
             Command::setClientFlag(1);
