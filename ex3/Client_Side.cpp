@@ -20,7 +20,7 @@
 
     int client_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (client_socket == -1) {
-        std::cerr << "cuold not create client socket" << std::endl;
+        std::cerr << "could not create client socket" << std::endl;
         return -1;
     }
 
@@ -38,16 +38,16 @@
     sleep(10);
     // loop condition updated by the main function
     while (!Client_Side::getKillClientThread()) {
-        std::queue<std::string> command_queue = *DatabaseManager::get().getSimCommandsQ();
+        std::queue<std::string>* command_queue = DatabaseManager::get().getSimCommandsQ();
         //pass commands to the simulator
-        while (!command_queue.empty()){
-            const char* message = command_queue.back().c_str();
+        while (!command_queue->empty()){
+            const char* message = command_queue->front().c_str();
             int sent = send(client_socket, message, strlen(message), 0);
             if (sent == -1) {
                 std:: cerr << "error sending message" << std::endl;
                 return -3;
             } else {
-                command_queue.pop();
+                command_queue->pop();
             }
             //char buffer[1024] = {0};
             //int valread = read(client_socket, buffer, 1024);

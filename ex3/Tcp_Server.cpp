@@ -60,7 +60,7 @@ int Tcp_Server::createAndRunServer(int port) {
             s += message[i];
         }
         vector<string> values = Lexer::split(s, ",");
-        vector<double> double_values;
+        vector<double> double_values = {};
         for (string x : values) {
             if(x != "")
                 double_values.push_back(stod(x));
@@ -73,6 +73,7 @@ int Tcp_Server::createAndRunServer(int port) {
             Tcp_Server::setServerFlag(1);
             Command::cv.notify_all();
         }
+        sleep(10);
     }
     close(socket1);
     //update the main thread that the thread is finished

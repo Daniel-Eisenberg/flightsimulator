@@ -17,10 +17,10 @@
  */
 class DatabaseManager {
     DatabaseManager();
-    std::queue<std::string> *simCommandsQ;
-    std::map<std::string, Variable*> *variablesMap;
-    std::map<std::string, double> *simVariablesMap;
-    std::map<std::string, CreateFunctionCommand*> *functionMap;
+    std::queue<std::string> *simCommandsQ = nullptr;
+    std::map<std::string, Variable*> *variablesMap = nullptr;
+    std::map<std::string, double> *simVariablesMap = nullptr;
+    std::map<std::string, CreateFunctionCommand*> *functionMap  = nullptr;
     static DatabaseManager *instance;
     std::vector<std::string> simArray  = {};
 public:

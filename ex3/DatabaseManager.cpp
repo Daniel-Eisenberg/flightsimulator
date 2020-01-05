@@ -77,6 +77,8 @@ void DatabaseManager::initSimVariablesMap() {
  * want to send to the simulator, after every command use we will dequeue the command
  */
 std::queue<std::string>* DatabaseManager::getSimCommandsQ() {
+    if (simCommandsQ == nullptr)
+        simCommandsQ = new queue<string>;
     return simCommandsQ;
 }
 
