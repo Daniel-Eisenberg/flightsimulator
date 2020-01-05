@@ -6,13 +6,22 @@
 #define EX3_COMMAND_H
 #include <list>
 #include <map>
+#include <vector>
+#include <condition_variable>
 #include "Variable.h"
-extern bool flag;
-class Command {
+
+class CommandUtil {
 public:
-    int virtual execute(std::vector<std::string> *list, int index, int scope);
+    static std::mutex lock;
+    static std::condition_variable cv;
     int static findSign(std::vector<std::string> *list, int i, const std::string &sign);
     int static findClosingBracket(std::vector<std::string> *list, int i);
+};
+
+class Command {
+public:
+    virtual int execute(std::vector<std::string> *list, int index, int scope) = 0;
+    virtual ~Command() {}; // No heap memory allocated
 };
 
 class OpenServerCommand : public Command {
@@ -51,7 +60,18 @@ public:
     int virtual execute(std::vector<std::string> *list, int index, int scope);
 };
 
-class FunctionCommand : public Command {
+class CreateFunctionCommand : public Command {
+    int args = 0;
+    int methodBeginIndex = 0;
+    std::vector<std::string> varNames = {};
+public:
+    int getBeginIndex();
+    std::vector<std::string> getVarNamesVector();
+    int virtual execute(std::vector<std::string> *list, int index, int scope);
+    virtual ~CreateFunctionCommand() {}; // No heap memory allocated
+};
+
+class RunFunctionCommand : public Command {
     int args = 0;
 public:
     int virtual execute(std::vector<std::string> *list, int index, int scope);

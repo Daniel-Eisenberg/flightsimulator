@@ -10,7 +10,6 @@
 
 class Variable {
     double value = 0;
-    bool valueInit = false;
     std::string sim = "";
     bool shouldUpdateSim = false;
     int scope = 0;
@@ -18,9 +17,10 @@ class Variable {
     void updateValueToServer(double value, std::string sim);
 public:
     Variable(std::string sim, bool shouldUpdateSim, int scope);
-    double getValue(int scope);
+    double getValue();
     int getScope();
     void setValue(double value);
+    ~Variable();
 };
 
 

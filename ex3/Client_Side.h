@@ -11,9 +11,16 @@
 #include <netinet/in.h>
 #include<arpa/inet.h>
 
+static bool client_flag = true;
+static bool kill_client_thread = false;
+
 class Client_Side {
 public:
-    static int create(const char* ip, const char* port);
+    static int createAndRunClient(const char* ip, const char *port);
+    static void setClientFlag(int i);
+    static bool getClientFlag();
+    static void killClientThread(int i);
+    static bool getKillClientThread();
 };
 
 

@@ -9,13 +9,19 @@
 #include <iostream>
 #include <unistd.h>
 #include <netinet/in.h>
-#define PORT 5402
+
+static bool server_flag = true;
+static bool kill_server_thread = false;
 
 class Tcp_Server {
 
 public:
-// create socket
-    static int create_socket(int port);
+    static int createAndRunServer(int port);
+    static void setServerFlag(int i);
+    static bool getServerFlag();
+    static void killServerThread(int i);
+    static bool getKillServerThread();
+
 };
 
 
