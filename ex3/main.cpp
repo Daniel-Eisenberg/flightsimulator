@@ -19,10 +19,7 @@ int main(int argc, char *argv[]) {
         return -20;
     }
 
-    for (string &x : a) {
-        cout << x << endl;
-    }
-
+    
     Parser::parser(&a, 0, false, 0);
     std::unique_lock<std::mutex> ul(Command::lock);
     Client_Side::killClientThread(0);
