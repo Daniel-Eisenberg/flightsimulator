@@ -75,13 +75,13 @@ int Tcp_Server::createAndRunServer(int port) {
         cleanString(message, i);
         if (Tcp_Server::getServerFlag()) {
             Tcp_Server::setServerFlag(1);
-            Command::cv.notify_all();
+            CommandUtil::cv.notify_all();
         }
     }
     close(socket1);
     //update the main thread that the thread is finished
     Tcp_Server::killServerThread(1);
-    Command::cv.notify_all();
+    CommandUtil::cv.notify_all();
     return 0;
 }
 

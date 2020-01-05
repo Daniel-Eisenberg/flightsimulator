@@ -16,8 +16,8 @@
 using namespace std;
 // Local static class methods
 // ----------------------------
-std::mutex Command::lock;
-std::condition_variable Command::cv;
+std::mutex CommandUtil::lock;
+std::condition_variable CommandUtil::cv;
 
 
 /**
@@ -63,12 +63,13 @@ double parseMathExp(std::vector<std::string> *list, int i, int scope) {
  * @param sign to search
  * @return
  */
-int Command::findSign(std::vector<std::string> *list, int i, const string& sign) {
+int CommandUtil::findSign(std::vector<std::string> *list, int i, const string& sign) {
     int args = 1;
     while (list->at(i) != sign) {
         i++;
         args++;
-        if (i == list->size()) {
+        unsigned long iLong = i;
+        if (iLong == list->size()) {
             cout << "Out of bound exception i=" << i;
             break;
         }
@@ -84,7 +85,7 @@ int Command::findSign(std::vector<std::string> *list, int i, const string& sign)
  * @param i index of current location
  * @return
  */
-int Command::findClosingBracket(std::vector<std::string> *list, int i) {
+int CommandUtil::findClosingBracket(std::vector<std::string> *list, int i) {
     int innerParenthesis = 1;
     int openParen = findSign(list, i, "{") - 2;
     int args = 1 + openParen;
@@ -110,7 +111,7 @@ int Command::findClosingBracket(std::vector<std::string> *list, int i) {
  */
 bool static evaluateLogicalExp(std::vector<std::string> *list, int i, int scope) {
     int leftStart = i;
-    int leftEnd = i + Command::findSign(list, leftStart + 1, "$");
+    int leftEnd = i + CommandUtil::findSign(list, leftStart + 1, "$");
     string defType = list->at(leftEnd);
     int rightStart = leftEnd + 1;
 
@@ -146,9 +147,10 @@ bool static evaluateLogicalExp(std::vector<std::string> *list, int i, int scope)
 int OpenServerCommand::execute(std::vector<std::string> *list, int i, int scope) {
     int port = stoi(list->at(i + 1));
     std::thread serverThread(&Tcp_Server::createAndRunServer, port);
-    std::unique_lock<std::mutex> ul(lock);
-    cv.wait(ul, [] {return !Tcp_Server::getServerFlag();});
+    std::unique_lock<std::mutex> ul(CommandUtil::lock);
+    CommandUtil::cv.wait(ul, [] {return !Tcp_Server::getServerFlag();});
     serverThread.detach();
+    (void)scope; // Suppress unused warning
     return args;
 }
 
@@ -163,9 +165,10 @@ int ConnectCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     const char* ip = list->at(i + 1).c_str();
     const char* port = list->at(i + 2).c_str();
     std::thread connectionThread(&Client_Side::createAndRunClient, ip, port);
-    std::unique_lock<std::mutex> ul(lock);
-    cv.wait(ul, [] {return !Client_Side::getClientFlag();});
+    std::unique_lock<std::mutex> ul(CommandUtil::lock);
+    CommandUtil::cv.wait(ul, [] {return !Client_Side::getClientFlag();});
     connectionThread.detach();
+    (void)scope; // Suppress unused warning
     return args;
 }
 
@@ -197,7 +200,7 @@ int DefineVarCommand::execute(std::vector<std::string> *list, int i, int scope) 
             var = new Variable("", false, scope);
             var->setValue(value);
             DatabaseManager::get().putToVariablesMap(varName, var);
-            args = 2 + findSign(list, i + 4, "$");
+            args = 2 + CommandUtil::findSign(list, i + 4, "$");
         } else
             cout << "Error: no math exp $ after = tag.";
     }
@@ -222,7 +225,7 @@ int SetVarCommand::execute(std::vector<std::string> *list, int i, int scope)  {
         } catch (char *e) {
             cout << "Error setting variable: " << e;
         }
-        args = 2 + findSign(list, i + 4, "$");
+        args = 2 + CommandUtil::findSign(list, i + 4, "$");
     } else
         cout << "Error: no math expression $ after = tag.";
 
@@ -239,8 +242,8 @@ int SetVarCommand::execute(std::vector<std::string> *list, int i, int scope)  {
  * @return number of arguments that the parser should skip
  */
 int WhileLoopCommand::execute(std::vector<std::string> *list, int i, int scope)  {
-    int openParen = findSign(list, i, "{") - 2;
-    args = findClosingBracket(list, i + 1) - 1;
+    int openParen = CommandUtil::findSign(list, i, "{") - 2;
+    args = CommandUtil::findClosingBracket(list, i + 1) - 1;
     int logicalExpIndex = i + 1;
     while(evaluateLogicalExp(list, logicalExpIndex, scope) && list->at(i) != "}") {
         // Call the parser in scoped mode
@@ -264,8 +267,8 @@ int WhileLoopCommand::execute(std::vector<std::string> *list, int i, int scope) 
  * @return number of arguments that the parser should skip
  */
 int IfCommand::execute(std::vector<std::string> *list, int i, int scope)  {
-    int openParen = findSign(list, i, "{") - 2;
-    args = findClosingBracket(list, i + 1) - 1;
+    int openParen = CommandUtil::findSign(list, i, "{") - 2;
+    args = CommandUtil::findClosingBracket(list, i + 1) - 1;
     int logicalExpIndex = i + 1;
     if(evaluateLogicalExp(list, logicalExpIndex, scope)) {
         Parser::parser(list, i + openParen + 1, true, scope + 1);
@@ -289,9 +292,9 @@ int IfCommand::execute(std::vector<std::string> *list, int i, int scope)  {
  */
 int CreateFunctionCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     string funcName = list->at(i + 1);
-    int openParen = findSign(list, i, "{") - 2;
+    int openParen = CommandUtil::findSign(list, i, "{") - 2;
     methodBeginIndex = i + openParen + 1;
-    args = findClosingBracket(list, i + 1) - 1;
+    args = CommandUtil::findClosingBracket(list, i + 1) - 1;
 
     i += 2;
     while (list->at(i) != "{") { // For functions with variables
@@ -302,6 +305,8 @@ int CreateFunctionCommand::execute(std::vector<std::string> *list, int i, int sc
 
     // Add the function to the function command map
     DatabaseManager::get().putToFunctionMap(funcName, this);
+
+    (void)scope; // Suppress unused warning
     return args;
 }
 
@@ -325,8 +330,8 @@ std::vector<std::string> CreateFunctionCommand::getVarNamesVector() {
  */
 int RunFunctionCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     string funcName = list->at(i + 1);
-    int openParen = findSign(list, i, "(") - 2;
-    int closeParen = findSign(list, i, ")") - 2;
+    unsigned long openParen = CommandUtil::findSign(list, i, "(") - 2;
+    unsigned long closeParen = CommandUtil::findSign(list, i, ")") - 2;
     args += closeParen;
 
     // Get the function objects and its members
@@ -393,5 +398,7 @@ int SleepCommand::execute(std::vector<std::string> *list, int i, int scope)  {
     string data = list->at(i + 1);
 //    sleep(stoi(data));
     sleep(1);
+
+    (void)scope; // Suppress unused warning
     return args;
 }

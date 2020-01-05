@@ -43,9 +43,9 @@ void setMap() {
  */
 void Parser::parser(vector<string> *params, unsigned index, bool isScoped, int scope) {
     setMap();
-    int stopScope;
+    unsigned int stopScope;
     if (isScoped)
-        stopScope = index + Command::findClosingBracket(params, index - 2) + 1;
+        stopScope = index + CommandUtil::findClosingBracket(params, index - 2) + 1;
 
     while (index < params -> size()) {
         if (!isScoped) { // Run the regular parse (main parser)

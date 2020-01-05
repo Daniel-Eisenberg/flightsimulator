@@ -53,13 +53,13 @@
         //release the main thread
         if (Client_Side::getClientFlag()) {
             Client_Side::setClientFlag(1);
-            Command::cv.notify_all();
+            CommandUtil::cv.notify_all();
         }
     }
     close(client_socket);
     //update the main thread that the thread is finished
     Client_Side::killClientThread(1);
-    Command::cv.notify_all();
+    CommandUtil::cv.notify_all();
     return 0;
 }
 /**

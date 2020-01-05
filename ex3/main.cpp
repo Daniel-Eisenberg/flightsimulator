@@ -20,11 +20,11 @@ int main(int argc, char *argv[]) {
 
 
     Parser::parser(&a, 0, false, 0);
-    std::unique_lock<std::mutex> ul(Command::lock);
+    std::unique_lock<std::mutex> ul(CommandUtil::lock);
     Client_Side::killClientThread(0);
-    Command::cv.wait(ul, [] {return !Client_Side::getKillClientThread();});
+    CommandUtil::cv.wait(ul, [] {return !Client_Side::getKillClientThread();});
     Tcp_Server::killServerThread(0);
-    Command::cv.wait(ul, [] {return !Tcp_Server::getKillServerThread();});
+    CommandUtil::cv.wait(ul, [] {return !Tcp_Server::getKillServerThread();});
     Parser::clearMap();
 
     return 0;

@@ -10,20 +10,17 @@
 #include <condition_variable>
 #include "Variable.h"
 
-//extern bool flag;
-//extern bool thread2;
-//extern bool thread3;
-//extern bool signal1;
-//extern bool signal2;
+class CommandUtil {
+public:
+    static std::mutex lock;
+    static std::condition_variable cv;
+    int static findSign(std::vector<std::string> *list, int i, const std::string &sign);
+    int static findClosingBracket(std::vector<std::string> *list, int i);
+};
 
 class Command {
 public:
-
-    static std::mutex lock;
-    static std::condition_variable cv;
-    virtual int execute(std::vector<std::string> *list, int index, int scope){return 0;};
-    int static findSign(std::vector<std::string> *list, int i, const std::string &sign);
-    int static findClosingBracket(std::vector<std::string> *list, int i);
+    virtual int execute(std::vector<std::string> *list, int index, int scope) = 0;
     virtual ~Command() {}; // No heap memory allocated
 };
 

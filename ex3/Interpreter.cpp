@@ -162,7 +162,7 @@ queue<Token> Interpreter::shuntingYard(string arg) {
  * @return
  */
 Expression* Interpreter::reversePolishNotation(queue<Token> shunting_yard) {
-    Expression* e1 = nullptr; Expression* e2 = nullptr; Expression* result = nullptr;
+    Expression* e1 = nullptr; Expression* e2 = nullptr;
     stack<Expression*> expressions;
 
     while (!shunting_yard.empty()) {

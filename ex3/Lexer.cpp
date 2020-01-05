@@ -14,7 +14,6 @@ std::vector<std::string> Lexer::split(const string& str, char delimiter) {
     vector<string> tokens;
     string token;
     istringstream tokenStream(str);
-    static unordered_map<string, Command> command_map;
     while (std::getline(tokenStream, token, delimiter))
     {
         tokens.push_back(token);
