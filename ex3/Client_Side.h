@@ -16,7 +16,7 @@ static bool kill_client_thread = false;
 
 class Client_Side {
 public:
-    static int createAndRunClient(const char* ip, const char* port);
+    static int createAndRunClient(const char* ip, const char *port);
     static void setClientFlag(int i);
     static bool getClientFlag();
     static void killClientThread(int i);

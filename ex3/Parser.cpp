@@ -2,6 +2,7 @@
 // Created by Yuval Grinberg on 04/01/2020.
 //
 
+#include <zconf.h>
 #include "Parser.h"
 
 using namespace std;
@@ -48,6 +49,8 @@ void Parser::parser(vector<string> *params, unsigned index, bool isScoped, int s
         stopScope = index + CommandUtil::findClosingBracket(params, index - 2) + 1;
 
     while (index < params -> size()) {
+        if (!DatabaseManager::get().getSimCommandsQ()->empty())
+            continue;
         if (!isScoped) { // Run the regular parse (main parser)
             string current_command = params -> at(index);
             cout << "Command=" << current_command <<" Index=" << index << endl;

@@ -16,7 +16,7 @@
  * @param port the port of the socket
  * @return a number different then 0 if there is a failure of any sort
  */
- int Client_Side::createAndRunClient(const char* ip, const char* port) {
+ int Client_Side::createAndRunClient(const char *ip, const char *port) {
 
     int client_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (client_socket == -1) {
@@ -27,7 +27,7 @@
     sockaddr_in address;
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = inet_addr(ip);
-    address.sin_port = htons(*port);
+    address.sin_port = htons(std::atoi(port));
     int is_connect = connect(client_socket, (struct sockaddr*)&address, sizeof(address));
     if (is_connect == -1) {
         std:: cerr << "Could not connect to server" << std:: endl;
